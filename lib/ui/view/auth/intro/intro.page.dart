@@ -1,84 +1,123 @@
-import 'package:batevolta/core/colors.dart';
-import 'package:batevolta/core/fonts/fonts.dart';
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crise/components/button.component.dart';
 import 'package:flutter_crise/components/text.component.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:quiz_enem/controllers/intro.controller.dart';
+import 'package:quiz_enem/core/fonts/fonts.dart';
+
+import '../../../../core/colors.dart';
+import 'package:rive/rive.dart';
 
 class IntroPage extends GetView {
+  IntroController ctrl = Get.put(IntroController());
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: AppColor.background,
-        body: SafeArea(
-            child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                  padding: EdgeInsets.only(top: 25),
-                  child: Center(
-                      child: Image.asset('assets/images/logo_intro.png',
-                          width: 200))),
-              const SizedBox(height: 20),
-              SvgPicture.asset('assets/images/vetor_intro.svg', width: 300),
-              TextComponent(
-                  value: 'Cansado de ir trabalhar de ônibus?',
-                  textAlign: TextAlign.center,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 17),
-              const SizedBox(height: 4),
-              TextComponent(
-                  value: 'Junta a galera do trabalho e se joga nessa viagem!',
-                  textAlign: TextAlign.center,
-                  fontSize: 13),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.only(top: 8, left: 40, right: 40),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: ButtonComponent(
-                        onPressed: () {},
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 15),
-                        label: 'Sou motorista',
-                        borderRadius: 34,
-                        color: Colors.blue,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ButtonOutlineComponent(
-                        onPressed: () {},
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 15),
-                        label: 'Quero carona',
-                        borderRadius: 34,
-                        outlineColor: AppColor.medium,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ButtonOutlineComponent(
-                        onPressed: () {},
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 15),
-                        label: 'Cadastre-se',
-                        borderRadius: 34,
-                        textColor: Colors.black,
-                        outlineColor: Colors.transparent,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        )));
+    return GetBuilder<IntroController>(
+        init: ctrl,
+        builder: (_) {
+          return Scaffold(
+            backgroundColor: AppColor.background,
+            body: Stack(children: [
+              Positioned(
+                  width: MediaQuery.of(context).size.width * 1.7,
+                  bottom: 200,
+                  left: 100,
+                  child: Image.asset('assets/images/Spline.png')),
+              Positioned.fill(
+                  child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 20, sigmaY: 10),
+                      child: SizedBox())),
+              const RiveAnimation.asset('assets/river/shapes.riv',
+                  fit: BoxFit.cover),
+              // -> Efeito ofuscado
+              Positioned.fill(
+                  child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 20, sigmaY: 10),
+                      child: SizedBox())),
+              SafeArea(
+                  child: Column(children: [
+                Padding(
+                    padding: const EdgeInsets.all(40),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextComponent(
+                            textAlign: TextAlign.left,
+                            value: 'Flutter',
+                            fontSize: 60,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: AppFont.Poppins),
+                        TextComponent(
+                            textAlign: TextAlign.left,
+                            value: 'UI Designer',
+                            fontSize: 60,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: AppFont.Poppins,
+                            height: 1.2),
+                        const SizedBox(height: 5),
+                        TextComponent(
+                            textAlign: TextAlign.left,
+                            value:
+                                'Conheça um novo mundo, navegue em uma experiencia única flutter.',
+                            fontSize: 22,
+                            height: 1.2),
+                        TextComponent(
+                            textAlign: TextAlign.left,
+                            value: 'by Italo Rodri.',
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: AppFont.Poppins,
+                            height: 1.2),
+                        const SizedBox(height: 5),
+                        Row(
+                          children: [
+                            GestureDetector(
+                                onTap: () {
+                                  ctrl.btnAnimCtrl.isActive = true;
+                                  ctrl.update();
+                                },
+                                child: SizedBox(
+                                  height: 64,
+                                  width: 260,
+                                  child: Stack(
+                                    children: [
+                                      RiveAnimation.asset(
+                                        'assets/river/button.riv',
+                                        controllers: [_.btnAnimCtrl],
+                                      ),
+                                      Positioned.fill(
+                                          top: 8,
+                                          left: 15,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              TextComponent(
+                                                value: 'Entrar',
+                                                fontFamily: AppFont.Moonget,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                              const SizedBox(width: 5),
+                                              const Icon(CupertinoIcons
+                                                  .arrow_uturn_right),
+                                            ],
+                                          ))
+                                    ],
+                                  ),
+                                )),
+                          ],
+                        )
+                      ],
+                    )),
+              ]))
+            ]),
+          );
+        });
   }
 }

@@ -1,6 +1,8 @@
-import 'package:batevolta/core/colors.dart';
-import 'package:batevolta/core/fonts/fonts.dart';
+
 import 'package:flutter/material.dart';
+
+import '../../core/colors.dart';
+import '../../core/fonts/fonts.dart';
 
 final ThemeData appThemeData = ThemeData(
     brightness: Brightness.light,

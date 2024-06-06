@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_crise/components/alert-dialog-popup.component.dart';
 import 'package:flutter_crise/components/snackbar.component.dart';
 import 'package:get/get.dart';
+import 'package:quiz_enem/core/colors.dart';
 
 import '../models/usuario.model.dart';
 import '../routes/app_routes.dart';
@@ -58,7 +59,10 @@ class AuthController extends GetxController {
                 'Enviamos um link de ativação para seu e-mail ${user.email}!',
             imageUrl: 'assets/undraw_mindfulness_8gqa.svg',
             confirmText: 'Confirmar',
-            cancelText: 'Voltar');
+            cancelText: 'Voltar',
+            colorPrimary: AppColor.primary,
+            colorText: AppColor.textColor,
+            fontSizeTitle: 18);
       }
     }
   }
@@ -126,7 +130,10 @@ class AuthController extends GetxController {
             contentText: 'O adminitrador deletou sua conta.',
             imageUrl: 'assets/undraw_mindfulness_8gqa.svg',
             confirmText: 'Continuar',
-            cancelText: 'Cancelar');
+            cancelText: 'Cancelar',
+            colorPrimary: AppColor.primary,
+            colorText: AppColor.textColor,
+            fontSizeTitle: 18);
         firebaseAuth.currentUser!.delete();
       } else {
         navigationToHome();
@@ -143,7 +150,10 @@ class AuthController extends GetxController {
           contentText: 'Enviamos um e-mail de recuperação de senha!',
           imageUrl: 'assets/undraw_mindfulness_8gqa.svg',
           confirmText: 'Confirmar',
-          cancelText: 'Voltar');
+          cancelText: 'Voltar',
+          colorPrimary: AppColor.primary,
+          colorText: AppColor.textColor,
+          fontSizeTitle: 18);
       Get.back();
     }).catchError((e) async {
       await getError(e);

@@ -1,9 +1,9 @@
-import 'package:batevolta/core/colors.dart';
-import 'package:batevolta/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../controllers/splash.controller.dart';
+import '../../../../core/colors.dart';
+import '../../../../routes/app_routes.dart';
 
 class SplashPage extends GetView<SplashController> {
   @override
