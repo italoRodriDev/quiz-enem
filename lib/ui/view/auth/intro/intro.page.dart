@@ -2,15 +2,13 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_crise/components/button.component.dart';
 import 'package:flutter_crise/components/text.component.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:quiz_enem/controllers/intro.controller.dart';
 import 'package:quiz_enem/core/fonts/fonts.dart';
+import 'package:rive/rive.dart';
 
 import '../../../../core/colors.dart';
-import 'package:rive/rive.dart';
 
 class IntroPage extends GetView {
   IntroController ctrl = Get.put(IntroController());
@@ -38,7 +36,7 @@ class IntroPage extends GetView {
               Positioned.fill(
                   child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 20, sigmaY: 10),
-                      child: SizedBox())),
+                      child: const SizedBox())),
               SafeArea(
                   child: Column(children: [
                 Padding(
@@ -74,47 +72,52 @@ class IntroPage extends GetView {
                             fontFamily: AppFont.Poppins,
                             height: 1.2),
                         const SizedBox(height: 5),
-                        Row(
-                          children: [
-                            GestureDetector(
-                                onTap: () {
-                                  ctrl.btnAnimCtrl.isActive = true;
-                                  ctrl.update();
-                                },
-                                child: SizedBox(
-                                  height: 64,
-                                  width: 260,
-                                  child: Stack(
-                                    children: [
-                                      RiveAnimation.asset(
-                                        'assets/river/button.riv',
-                                        controllers: [_.btnAnimCtrl],
-                                      ),
-                                      Positioned.fill(
-                                          top: 8,
-                                          left: 15,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              TextComponent(
-                                                value: 'Entrar',
-                                                fontFamily: AppFont.Moonget,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                              const SizedBox(width: 5),
-                                              const Icon(CupertinoIcons
-                                                  .arrow_uturn_right),
-                                            ],
-                                          ))
-                                    ],
-                                  ),
-                                )),
-                          ],
-                        )
                       ],
                     )),
+                const Spacer(flex: 2),
+                Padding(
+                    padding: const EdgeInsets.only(left: 40),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                            onTap: () {
+                              ctrl.btnAnimCtrl.isActive = true;
+                              ctrl.update();
+                            },
+                            child: SizedBox(
+                              height: 64,
+                              width: 260,
+                              child: Stack(
+                                children: [
+                                  RiveAnimation.asset(
+                                    'assets/river/button.riv',
+                                    controllers: [_.btnAnimCtrl],
+                                  ),
+                                  Positioned.fill(
+                                      top: 8,
+                                      left: 15,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          TextComponent(
+                                            value: 'Entrar',
+                                            fontFamily: AppFont.Moonget,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                          const SizedBox(width: 5),
+                                          const Icon(
+                                              CupertinoIcons.forward),
+                                        ],
+                                      ))
+                                ],
+                              ),
+                            )),
+                      ],
+                    )),
+                const Spacer(),
               ]))
             ]),
           );
