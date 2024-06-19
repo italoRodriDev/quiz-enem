@@ -173,7 +173,7 @@ class AuthController extends GetxController {
 
   signOut() {
     FirebaseAuth.instance.signOut().then((value) {
-      Get.offAndToNamed(Routes.SPLASH);
+      Get.offAndToNamed(Routes.INTRO);
     });
   }
 

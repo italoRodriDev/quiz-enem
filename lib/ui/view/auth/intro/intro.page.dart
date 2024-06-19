@@ -6,6 +6,7 @@ import 'package:flutter_crise/components/text.component.dart';
 import 'package:get/get.dart';
 import 'package:quiz_enem/controllers/intro.controller.dart';
 import 'package:quiz_enem/core/fonts/fonts.dart';
+import 'package:quiz_enem/routes/app_routes.dart';
 import 'package:rive/rive.dart';
 
 import '../../../../core/colors.dart';
@@ -46,13 +47,13 @@ class IntroPage extends GetView {
                       children: [
                         TextComponent(
                             textAlign: TextAlign.left,
-                            value: 'Flutter',
+                            value: 'Café com',
                             fontSize: 60,
                             fontWeight: FontWeight.bold,
                             fontFamily: AppFont.Poppins),
                         TextComponent(
                             textAlign: TextAlign.left,
-                            value: 'UI Designer',
+                            value: 'estudos',
                             fontSize: 60,
                             fontWeight: FontWeight.bold,
                             fontFamily: AppFont.Poppins,
@@ -61,15 +62,8 @@ class IntroPage extends GetView {
                         TextComponent(
                             textAlign: TextAlign.left,
                             value:
-                                'Conheça um novo mundo, navegue em uma experiencia única flutter.',
+                                'Estude de maneira eficiente para suas provas.',
                             fontSize: 22,
-                            height: 1.2),
-                        TextComponent(
-                            textAlign: TextAlign.left,
-                            value: 'by Italo Rodri.',
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: AppFont.Poppins,
                             height: 1.2),
                         const SizedBox(height: 5),
                       ],
@@ -84,6 +78,7 @@ class IntroPage extends GetView {
                             onTap: () {
                               ctrl.btnAnimCtrl.isActive = true;
                               ctrl.update();
+                              Get.offAndToNamed(Routes.LISTA_PERGUNTAS);
                             },
                             child: SizedBox(
                               height: 64,

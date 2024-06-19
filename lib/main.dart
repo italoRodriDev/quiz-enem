@@ -19,7 +19,7 @@ void main() async {
     title: 'QuizEnem',
     debugShowCheckedModeBanner: false,
     getPages: AppPages.routes,
-    initialRoute: Routes.SPLASH,
+    initialRoute: Routes.INTRO,
     theme: appThemeData,
   ));
 }
