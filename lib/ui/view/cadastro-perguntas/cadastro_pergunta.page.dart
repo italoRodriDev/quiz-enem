@@ -18,6 +18,7 @@ class CadastroPerguntaPage extends GetView {
 
   @override
   Widget build(BuildContext context) {
+    ctrl.context = context;
     ctrl.setAlternativas();
     return GetBuilder(
         init: ctrl,
@@ -112,6 +113,9 @@ class CadastroPerguntaPage extends GetView {
                       builder: ((context, value, child) {
                         if (ctrl.alternativas.isNotEmpty) {
                           return SelectComponent(
+                            onChanged: (value) {
+                              ctrl.respostaSelecionada = value;
+                            },
                             labelText: 'Resposta correta',
                             primaryColor: AppColor.primary,
                             menuItemData: ctrl.alternativas,

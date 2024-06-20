@@ -3,22 +3,25 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_crise/components/alert-dialog-popup.component.dart';
 import 'package:flutter_crise/components/select.component.dart';
 import 'package:get/get.dart';
 import 'package:quill_html_editor/quill_html_editor.dart';
+import 'package:quiz_enem/core/colors.dart';
 
 class CadastroPerguntasController extends GetxController {
+  late BuildContext context;
   final firestore = FirebaseFirestore.instance;
 
   QuillEditorController quillCtrl = QuillEditorController();
   ValueNotifier<List<MenuItemData>> alternativasSelecionaveisEvent =
       ValueNotifier<List<MenuItemData>>([]);
   List<MenuItemData> alternativasSelecionaveis = [
-    MenuItemData(label: "Alternativa 1", value: "1"),
-    MenuItemData(label: "Alternativa 2", value: "2"),
-    MenuItemData(label: "Alternativa 3", value: "3"),
-    MenuItemData(label: "Alternativa 4", value: "4"),
-    MenuItemData(label: "Alternativa 5", value: "5")
+    MenuItemData(label: "Alternativa 1", value: "Letra A"),
+    MenuItemData(label: "Alternativa 2", value: "Letra B"),
+    MenuItemData(label: "Alternativa 3", value: "Letra C"),
+    MenuItemData(label: "Alternativa 4", value: "Letra D"),
+    MenuItemData(label: "Alternativa 5", value: "Letra E")
   ];
   List<MenuItemData> alternativas = [];
   var materia = 'ND';
@@ -41,7 +44,7 @@ class CadastroPerguntasController extends GetxController {
     update();
     alternativasSelecionaveis
         .add(MenuItemData(label: 'Nova', value: Random.secure().nextDouble()));
-    Future.delayed(const Duration(seconds: 3)).then((value) async {
+    Future.delayed(const Duration(seconds: 1)).then((value) async {
       await setAlternativas();
       update();
     });
@@ -51,7 +54,7 @@ class CadastroPerguntasController extends GetxController {
     if (alternativasSelecionaveis.length > 1) {
       alternativas.clear();
       update();
-      Future.delayed(const Duration(seconds: 3)).then((value) {
+      Future.delayed(const Duration(seconds: 1)).then((value) {
         var index = alternativasSelecionaveis.indexOf(item);
         alternativasSelecionaveis.removeAt(index);
 
@@ -98,8 +101,20 @@ class CadastroPerguntasController extends GetxController {
       "respostaSelecionada": respostaSelecionada
     };
 
-    ref.set(data).then((value) {
+    ref.set(data).then((value) async {
       print('Salvo com sucesso');
+      await AlertDialogPopupsComponent.show(context,
+          titleText: 'Salvo com sucesso',
+          contentText: 'Fique a vontade para continuar',
+          imageUrl: '',
+          confirmText: 'Continuar',
+          cancelText: 'Cancelar',
+          colorPrimary: AppColor.primary,
+          fontSizeTitle: 22,
+          colorText: AppColor.textColor,
+          onPressedConfirm: () {
+            Get.back();
+          });
     }).catchError((error) {
       print('Erro ao salvar');
     });
