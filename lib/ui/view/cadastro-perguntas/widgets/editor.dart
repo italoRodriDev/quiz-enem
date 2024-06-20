@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:quill_html_editor/quill_html_editor.dart';
+import 'package:quiz_enem/core/colors.dart';
 
 class EditorTexto extends StatefulWidget {
-  const EditorTexto({super.key});
+  QuillEditorController controller;
+  EditorTexto({super.key, required this.controller});
 
   @override
   State<EditorTexto> createState() => _EditorTextoState();
@@ -10,7 +12,7 @@ class EditorTexto extends StatefulWidget {
 
 class _EditorTextoState extends State<EditorTexto> {
   ///[controller] create a QuillEditorController to access the editor methods
-  late QuillEditorController controller;
+ 
 
   ///[customToolBarList] pass the custom toolbarList to show only selected styles in the editor
 
@@ -41,11 +43,10 @@ class _EditorTextoState extends State<EditorTexto> {
   bool _hasFocus = false;
   @override
   void initState() {
-    controller = QuillEditorController();
-    controller.onTextChanged((text) {
+    widget.controller.onTextChanged((text) {
       debugPrint('listening to $text');
     });
-    controller.onEditorLoaded(() {
+    widget.controller.onEditorLoaded(() {
       debugPrint('Editor Loaded :)');
     });
     super.initState();
@@ -54,7 +55,7 @@ class _EditorTextoState extends State<EditorTexto> {
   @override
   void dispose() {
     /// please do not forget to dispose the controller
-    controller.dispose();
+    widget.controller.dispose();
     super.dispose();
   }
 
@@ -70,7 +71,7 @@ class _EditorTextoState extends State<EditorTexto> {
               iconSize: 25,
               iconColor: _toolbarIconColor,
               activeIconColor: Colors.greenAccent.shade400,
-              controller: controller,
+              controller: widget.controller,
               crossAxisAlignment: WrapCrossAlignment.start,
               direction: Axis.horizontal,
               customButtons: [
@@ -89,10 +90,10 @@ class _EditorTextoState extends State<EditorTexto> {
                     )),
                 InkWell(
                     onTap: () async {
-                      var selectedText = await controller.getSelectedText();
+                      var selectedText = await widget.controller.getSelectedText();
                       debugPrint('selectedText $selectedText');
                       var selectedHtmlText =
-                          await controller.getSelectedHtmlText();
+                          await widget.controller.getSelectedHtmlText();
                       debugPrint('selectedHtmlText $selectedHtmlText');
                     },
                     child: const Icon(
@@ -104,7 +105,7 @@ class _EditorTextoState extends State<EditorTexto> {
             Expanded(
               child: QuillHtmlEditor(
                 hintText: 'Dados da pergunta',
-                controller: controller,
+                controller: widget.controller,
                 isEnabled: true,
                 ensureVisible: false,
                 minHeight: 500,
@@ -118,10 +119,10 @@ class _EditorTextoState extends State<EditorTexto> {
                 inputAction: InputAction.newline,
                 onEditingComplete: (s) => debugPrint('Editing completed $s'),
                 loadingBuilder: (context) {
-                  return const Center(
+                  return Center(
                       child: CircularProgressIndicator(
                     strokeWidth: 1,
-                    color: Colors.red,
+                    color: AppColor.primary,
                   ));
                 },
                 onFocusChanged: (focus) {
@@ -132,6 +133,7 @@ class _EditorTextoState extends State<EditorTexto> {
                 },
                 onTextChanged: (text) => debugPrint('widget text change $text'),
                 onEditorCreated: () {
+                  widget.controller.setText('Uma empresa de consultoria deseja saber a opinião de seus funcionários sobre o plano de benefícios oferecido. Para isso, pretende entrevistá-los pessoalmente. A empresa dispõe de três entrevistadores: A, B e C. Sabe-se que o entrevistador A realiza uma entrevista em 20 minutos, o entrevistador B, em 30 minutos, e o entrevistador C, em 40 minutos. Se cada entrevistador trabalha ininterruptamente por 4 horas, quantas entrevistas, no total, serão realizadas?');
                   debugPrint('Editor has been loaded');
                 },
                 onEditorResized: (height) =>
@@ -146,39 +148,39 @@ class _EditorTextoState extends State<EditorTexto> {
 
   ///[getHtmlText] to get the html text from editor
   void getHtmlText() async {
-    String? htmlText = await controller.getText();
+    String? htmlText = await widget.controller.getText();
     debugPrint(htmlText);
   }
 
   ///[setHtmlText] to set the html text to editor
   void setHtmlText(String text) async {
-    await controller.setText(text);
+    await widget.controller.setText(text);
   }
 
   ///[insertNetworkImage] to set the html text to editor
   void insertNetworkImage(String url) async {
-    await controller.embedImage(url);
+    await widget.controller.embedImage(url);
   }
 
   ///[insertVideoURL] to set the video url to editor
   ///this method recognises the inserted url and sanitize to make it embeddable url
   ///eg: converts youtube video to embed video, same for vimeo
   void insertVideoURL(String url) async {
-    await controller.embedVideo(url);
+    await widget.controller.embedVideo(url);
   }
 
   /// to set the html text to editor
   /// if index is not set, it will be inserted at the cursor postion
   void insertHtmlText(String text, {int? index}) async {
-    await controller.insertText(text, index: index);
+    await widget.controller.insertText(text, index: index);
   }
 
   /// to clear the editor
-  void clearEditor() => controller.clear();
+  void clearEditor() => widget.controller.clear();
 
   /// to enable/disable the editor
-  void enableEditor(bool enable) => controller.enableEditor(enable);
+  void enableEditor(bool enable) => widget.controller.enableEditor(enable);
 
   /// method to un focus editor
-  void unFocusEditor() => controller.unFocus();
+  void unFocusEditor() => widget.controller.unFocus();
 }
