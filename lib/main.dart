@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:quiz_enem/routes/app_pages.dart';
 import 'package:quiz_enem/routes/app_routes.dart';
 import 'package:quiz_enem/services/permissions.service.dart';
+import 'package:quiz_enem/services/step_perguntas.service.dart';
 import 'package:quiz_enem/ui/theme/app_theme.dart';
 
 import 'firebase_options.dart';
@@ -14,6 +15,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await Get.putAsync<PermissionsService>(() async => PermissionsService());
+  await Get.putAsync<StepPerguntasService>(() async => StepPerguntasService());
 
   runApp(GetMaterialApp(
     title: 'QuizEnem',

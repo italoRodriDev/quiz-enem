@@ -5,9 +5,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crise/components/alert-dialog-popup.component.dart';
 import 'package:flutter_crise/components/select.component.dart';
+import 'package:flutter_crise/components/snackbar.component.dart';
 import 'package:get/get.dart';
 import 'package:quill_html_editor/quill_html_editor.dart';
 import 'package:quiz_enem/core/colors.dart';
+import 'package:quiz_enem/models/pergunta.model.dart';
 
 class CadastroPerguntasController extends GetxController {
   late BuildContext context;
@@ -92,17 +94,15 @@ class CadastroPerguntasController extends GetxController {
       list.add(i.value.toString());
     }
 
-    var data = {
-      "id": ref.id,
-      "materia": materia,
-      "assunto": assunto,
-      "pergunta": textPergunta,
-      "alternativas": list,
-      "respostaSelecionada": respostaSelecionada
-    };
+    PerguntaModel data = PerguntaModel(
+        id: ref.id,
+        materia: materia,
+        assunto: assunto,
+        pergunta: textPergunta,
+        alternativas: list,
+        respostaSelecionada: respostaSelecionada);
 
-    ref.set(data).then((value) async {
-      print('Salvo com sucesso');
+    ref.set(data.toJson()).then((value) async {
       await AlertDialogPopupsComponent.show(context,
           titleText: 'Salvo com sucesso',
           contentText: 'Fique a vontade para continuar',
@@ -111,12 +111,11 @@ class CadastroPerguntasController extends GetxController {
           cancelText: 'Cancelar',
           colorPrimary: AppColor.primary,
           fontSizeTitle: 22,
-          colorText: AppColor.textColor,
-          onPressedConfirm: () {
-            Get.back();
-          });
-    }).catchError((error) {
-      print('Erro ao salvar');
+          colorText: AppColor.textColor, onPressedConfirm: () {
+        Get.back();
+      });
+    }).catchError((error) async {
+      await SnackbarComponent.show(context, text: 'Error ao salvar');
     });
   }
 }
