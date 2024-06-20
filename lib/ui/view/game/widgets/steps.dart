@@ -3,6 +3,7 @@ import 'package:flutter_crise/components/button.component.dart';
 import 'package:flutter_crise/components/text.component.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:quiz_enem/core/fonts/fonts.dart';
 import 'package:quiz_enem/services/step_perguntas.service.dart';
 
 import '../../../../core/colors.dart';
@@ -97,7 +98,7 @@ class _StepsPerguntasState extends State<StepsPerguntas> {
                             children: [
                               Container(
                                   decoration: BoxDecoration(
-                                    color: AppColor.primary,
+                                      color: AppColor.primary,
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(100)),
                                       border: Border.all(
@@ -114,30 +115,33 @@ class _StepsPerguntasState extends State<StepsPerguntas> {
                                           color: AppColor.light))),
                               const SizedBox(width: 5),
                               TextComponent(
+                                  fontFamily: AppFont.Moonget,
                                   value: widget.stepsPages[screenIndex!].title
                                       .toString(),
-                                  fontSize: 16)
+                                  fontSize: 22)
                             ],
                           )
                         : Row(children: [
                             Container(
-                               decoration: BoxDecoration(
+                                decoration: BoxDecoration(
                                     color: AppColor.primary,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(100)),
-                                      border: Border.all(
-                                          color: AppColor.light, width: 1)),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(100)),
+                                    border: Border.all(
+                                        color: AppColor.light, width: 1)),
                                 child: IconButton(
                                     onPressed: () {
                                       widget.onBack(screenIndex! - 1);
                                       Get.back();
                                     },
-                                    icon: Icon(Icons.arrow_back, color: AppColor.light))),
+                                    icon: Icon(Icons.arrow_back,
+                                        color: AppColor.light))),
                             const SizedBox(width: 5),
                             TextComponent(
+                                fontFamily: AppFont.Moonget,
                                 value: widget.stepsPages[screenIndex!].title
                                     .toString(),
-                                fontSize: 16)
+                                fontSize: 22)
                           ]),
                   ),
                 ),
@@ -157,7 +161,7 @@ class _StepsPerguntasState extends State<StepsPerguntas> {
                                       color: AppColor.button,
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 100, vertical: 10),
-                                      borderRadius: 0,
+                                      borderRadius: 32,
                                       onPressed: () {
                                         if (screenIndex == screens.length - 1) {
                                           widget.onFinish();
@@ -170,6 +174,8 @@ class _StepsPerguntasState extends State<StepsPerguntas> {
                                         }
                                       },
                                       label: TextComponent(
+                                          fontFamily: AppFont.Moonget,
+                                          fontSize: 18,
                                           value:
                                               screenIndex == screens.length - 1
                                                   ? 'Concluir'
@@ -376,7 +382,7 @@ class _PageViewWithIndicatorsState extends State<PageViewWithIndicators> {
           controller: widget.pageController,
           children: widget.children,
         ),
-        validIndicators(IndicatorScreenType.dots)
+        validIndicators(IndicatorScreenType.numbered)
       ],
     );
   }

@@ -63,14 +63,14 @@ class _VisualizadorHtmlState extends State<VisualizadorHtml> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        height: 300,
+        height: 200,
         child: SingleChildScrollView(
           child: QuillHtmlEditor(
                 hintText: 'Dados da pergunta',
                 controller: widget.controller,
                 isEnabled: false,
                 ensureVisible: false,
-                minHeight: 300,
+                minHeight: 200,
                 autoFocus: false,
                 textStyle: _editorTextStyle,
                 hintTextStyle: _hintTextStyle,

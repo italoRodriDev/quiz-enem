@@ -25,7 +25,10 @@ class GameController extends GetxController {
   setRespostaCorreta({required int value, required PerguntaModel item}) {
     selectedValue = value;
     respostaEvent.value = item.alternativas[value].toString();
-    print(item.respostaSelecionada);
-    print(respostaEvent.value);
+    if (item.respostaCorreta == respostaEvent.value) {
+        Get.find<StepPerguntasService>().showBtnStep.value = true;
+      } else {
+        Get.find<StepPerguntasService>().showBtnStep.value = false;
+      }
   }
 }

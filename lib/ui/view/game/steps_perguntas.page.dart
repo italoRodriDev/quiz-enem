@@ -21,7 +21,7 @@ class StepsPerguntasPage extends GetView {
               body: SafeArea(
                   child: SingleChildScrollView(
                       child: SizedBox(
-                          height: 900,
+                          height: 750,
                           child: StreamBuilder<List<PerguntaModel>>(
                             stream: ctrl.getPerguntas(),
                             builder: (context, snapshot) {
@@ -30,9 +30,13 @@ class StepsPerguntasPage extends GetView {
                                 return StepsPerguntas(
                                   onSkip: (index) {
                                     FocusScope.of(context).unfocus();
+                                    ctrl.respostaEvent.value = 'ND';
+                                    ctrl.selectedValue = -1;
                                   },
                                   onBack: (index) {
                                     FocusScope.of(context).unfocus();
+                                    ctrl.respostaEvent.value = 'ND';
+                                     ctrl.selectedValue = -1;
                                   },
                                   onFinish: () {
                                     FocusScope.of(context).unfocus();
@@ -62,9 +66,20 @@ class StepsPerguntasPage extends GetView {
                                                                 item.pergunta),
                                                         const SizedBox(
                                                             height: 10),
-                                                        TextComponent(
-                                                            value:
-                                                                'Alterantivas'),
+                                                        const Divider(),
+                                                        Row(
+                                                          children: [
+                                                            TextComponent(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 22,
+                                                                value:
+                                                                    'Alterantivas'),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 8),
                                                         for (var i = 0;
                                                             i <
                                                                 item.alternativas
@@ -81,7 +96,9 @@ class StepsPerguntasPage extends GetView {
                                                                 _.selectedValue,
                                                             onChanged:
                                                                 (int? value) {
-                                                              ctrl.setRespostaCorreta(value: value!, item: item);
+                                                              ctrl.setRespostaCorreta(
+                                                                  value: value!,
+                                                                  item: item);
                                                             },
                                                           ),
                                                       ],

@@ -6,7 +6,7 @@ class PerguntaModel {
   String assunto;
   String pergunta;
   List<dynamic> alternativas;
-  String respostaSelecionada;
+  String respostaCorreta;
 
   PerguntaModel(
       {required this.id,
@@ -14,7 +14,7 @@ class PerguntaModel {
       required this.assunto,
       required this.pergunta,
       required this.alternativas,
-      required this.respostaSelecionada});
+      required this.respostaCorreta});
 
   factory PerguntaModel.fromJson(Map<String, dynamic> json) {
     return PerguntaModel(
@@ -23,7 +23,7 @@ class PerguntaModel {
         assunto: json['assunto'] ?? '',
         pergunta: json['pergunta'] ?? '',
         alternativas: json['alternativas'] ?? [],
-        respostaSelecionada: json['respostaSelecionada'] ?? '');
+        respostaCorreta: json['respostaCorreta'] ?? '');
   }
 
   Map<String, dynamic> toJson() {
@@ -33,7 +33,7 @@ class PerguntaModel {
       'assunto': assunto,
       'pergunta': pergunta,
       'alternativas': alternativas,
-      'respostaSelecionada': respostaSelecionada
+      'respostaCorreta': respostaCorreta
     };
   }
 }
