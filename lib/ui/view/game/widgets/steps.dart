@@ -179,7 +179,7 @@ class _StepsPerguntasState extends State<StepsPerguntas> {
                                           value:
                                               screenIndex == screens.length - 1
                                                   ? 'Concluir'
-                                                  : 'Próximo',
+                                                  : 'Próxima',
                                           color: Colors.white));
                                 } else {
                                   return Container();

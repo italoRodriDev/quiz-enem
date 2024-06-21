@@ -71,7 +71,8 @@ class DashBoardPage extends GetView {
                           primaryColor: AppColor.primary,
                           initialValue: 'ND',
                           menuItemData: [
-                            MenuItemData(label: 'Todos', value: 'ND')
+                            MenuItemData(label: 'Todos', value: 'ND'),
+                            MenuItemData(label: 'Matemática', value: 'Matemática'),
                           ],
                         ),
                       ),
@@ -82,12 +83,14 @@ class DashBoardPage extends GetView {
                           primaryColor: AppColor.primary,
                           initialValue: 'ND',
                           menuItemData: [
-                            MenuItemData(label: 'Todos', value: 'ND')
+                            MenuItemData(label: 'Todos', value: 'ND'),
+                            MenuItemData(label: 'Algoritmos', value: 'Algoritmos'),
                           ],
                         ),
                       ),
                     ],
                   ),
+                  const SizedBox(height: 30),
                   SizedBox(
                       height: 500,
                       child: StreamBuilder<List<PerguntaModel>>(
