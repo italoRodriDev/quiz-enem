@@ -7,9 +7,14 @@ import '../models/pergunta.model.dart';
 import '../services/step_perguntas.service.dart';
 
 class GameController extends GetxController {
-  QuillEditorController quillCtrl = QuillEditorController();
   ValueNotifier<String> respostaEvent = ValueNotifier<String>('ND');
   int selectedValue = -1;
+
+  @override
+  void onReady() {
+    Get.find<StepPerguntasService>().showBtnStep.value = false;
+    super.onReady();
+  }
 
   Stream<List<PerguntaModel>> getPerguntas() {
     return FirebaseFirestore.instance
