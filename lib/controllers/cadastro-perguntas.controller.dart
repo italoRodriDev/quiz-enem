@@ -8,6 +8,9 @@ import 'package:quill_html_editor/quill_html_editor.dart';
 import 'package:quiz_enem/core/colors.dart';
 import 'package:quiz_enem/models/pergunta.model.dart';
 
+import '../models/assunto.model.dart';
+import '../models/materia.model.dart';
+
 class CadastroPerguntasController extends GetxController {
   late BuildContext context;
   final firestore = FirebaseFirestore.instance;
@@ -24,8 +27,34 @@ class CadastroPerguntasController extends GetxController {
     TextEditingController(text: ''),
     TextEditingController(text: ''),
   ];
-  var materia = 'ND';
-  var assunto = 'ND';
+  TextEditingController idMateria = TextEditingController(text: 'ND');
+  TextEditingController materia = TextEditingController();
+  TextEditingController idAssunto = TextEditingController(text: 'ND');
+  TextEditingController assunto = TextEditingController();
+  MateriaModel materiaModel = MateriaModel(id: '', nome: '');
+  AssuntoModel assutoModel = AssuntoModel(id: '', idMateria: '', materia: '', nome: '');
+
+  Stream<List<MateriaModel>> getMaterias() {
+    return FirebaseFirestore.instance
+        .collection('Materias')
+        .doc('idUser')
+        .collection('Materias')
+        .snapshots()
+        .map((snapShot) => snapShot.docs
+            .map((doc) => MateriaModel.fromJson(doc.data()))
+            .toList());
+  }
+
+  Stream<List<AssuntoModel>> getAssuntos() {
+    return FirebaseFirestore.instance
+        .collection('Materias')
+        .doc('idUser')
+        .collection('Assuntos')
+        .snapshots()
+        .map((snapShot) => snapShot.docs
+            .map((doc) => AssuntoModel.fromJson(doc.data()))
+            .toList());
+  }
 
   addPergunta() {
     if (inputsAlternativas.length < 5) {
@@ -56,7 +85,9 @@ class CadastroPerguntasController extends GetxController {
     var index = inputsAlternativas.indexOf(item);
     var data = inputsAlternativas[index];
     inputsAlternativas[index].text = textValue;
-    print(textValue);
+     inputsAlternativas[index].selection = TextSelection.fromPosition(
+      TextPosition(offset:  inputsAlternativas[index].text.length),
+    );
     update();
   }
 
@@ -77,8 +108,10 @@ class CadastroPerguntasController extends GetxController {
 
     PerguntaModel data = PerguntaModel(
         id: ref.id,
-        materia: materia,
-        assunto: assunto,
+        idMateria: idMateria.text,
+        materia: materia.text,
+        idAssunto: idAssunto.text,
+        assunto: assunto.text,
         pergunta: textPergunta,
         alternativas: list,
         respostaCorreta: respostaCorretaEvent.value);

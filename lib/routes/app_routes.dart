@@ -6,5 +6,7 @@ abstract class Routes {
   static const TABS_MENU = '/tabs-menu';
   static const LISTA_PERGUNTAS = '/perguntas';
   static const CADASTRO_PERGUNTA = '/cadastro-pergunta';
+  static const CADASTRO_MATERIA = '/cadastro-materia';
+  static const CADASTRO_ASSUNTO = '/cadastro-assunto';
   static const STEP_PERGUNTAS = '/step-perguntas';
 }

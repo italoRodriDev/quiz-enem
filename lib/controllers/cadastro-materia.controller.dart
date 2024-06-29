@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_crise/components/alert-dialog.component.dart';
 import 'package:flutter_crise/components/snackbar.component.dart';
 import 'package:get/get.dart';
-import 'package:quiz_enem/models/pergunta.model.dart';
 
-import '../models/assunto.model.dart';
 import '../models/materia.model.dart';
 
-class DashBoardController extends GetxController {
+class CadastroMateriaController extends GetxController {
   late BuildContext context;
   final firestore = FirebaseFirestore.instance;
+
+  TextEditingController materia = TextEditingController();
 
   Stream<List<MateriaModel>> getMaterias() {
     return FirebaseFirestore.instance
@@ -23,40 +23,39 @@ class DashBoardController extends GetxController {
             .toList());
   }
 
-  Stream<List<AssuntoModel>> getAssuntos() {
-    return FirebaseFirestore.instance
-        .collection('Materias')
-        .doc('idUser')
-        .collection('Assuntos')
-        .snapshots()
-        .map((snapShot) => snapShot.docs
-            .map((doc) => AssuntoModel.fromJson(doc.data()))
-            .toList());
+  saveData() async {
+    if (materia.text.isNotEmpty) {
+      var ref = await firestore
+          .collection('Materias')
+          .doc('idUser')
+          .collection('Materias')
+          .doc();
+
+      ref
+          .set(MateriaModel(id: ref.id, nome: materia.text).toJson())
+          .then((value) async {
+        resetData();
+        await SnackbarComponent.show(context, text: 'Cadastrado com sucesso.');
+      }).catchError((error) async {
+        await SnackbarComponent.show(context, text: 'Erro ao salvar.');
+      });
+    } else {
+      await SnackbarComponent.show(context, text: 'Digite o nome da matéria.');
+    }
   }
 
-  Stream<List<PerguntaModel>> getPerguntas() {
-    return FirebaseFirestore.instance
-        .collection('Usuarios')
-        .doc('idUser')
-        .collection('Perguntas')
-        .snapshots()
-        .map((snapShot) => snapShot.docs
-            .map((doc) => PerguntaModel.fromJson(doc.data()))
-            .toList());
-  }
-
-  removePergunta(PerguntaModel item, int index) async {
+  remove(MateriaModel model, index) async {
     await AlertDialogComponent.show(context,
         titleText: 'Deseja excluir?',
-        contentText: 'Pergunta ${index + 1}',
+        contentText: 'Matéria: ${model.nome.toString()}',
         confirmText: 'Excluir',
         cancelText: 'Cancelar',
         onPressedCancel: () {}, onPressedConfirm: () {
       FirebaseFirestore.instance
-          .collection('Usuarios')
+          .collection('Materias')
           .doc('idUser')
-          .collection('Perguntas')
-          .doc(item.id)
+          .collection('Materias')
+          .doc(model.id)
           .delete()
           .then((value) {
         SnackbarComponent.show(context, text: 'Excluido com sucesso');
@@ -64,5 +63,10 @@ class DashBoardController extends GetxController {
         SnackbarComponent.show(context, text: 'Erro ao excluir');
       });
     });
+  }
+
+  resetData() {
+    materia.clear();
+    update();
   }
 }

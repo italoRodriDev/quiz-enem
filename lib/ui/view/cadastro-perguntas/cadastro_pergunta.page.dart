@@ -7,9 +7,12 @@ import 'package:flutter_crise/components/select.component.dart';
 import 'package:flutter_crise/components/text.component.dart';
 import 'package:get/get.dart';
 import 'package:quiz_enem/controllers/cadastro-perguntas.controller.dart';
+import 'package:quiz_enem/routes/app_routes.dart';
 
 import '../../../core/colors.dart';
 import '../../../core/fonts/fonts.dart';
+import '../../../models/assunto.model.dart';
+import '../../../models/materia.model.dart';
 import 'widgets/editor.dart';
 
 class CadastroPerguntaPage extends GetView {
@@ -26,7 +29,7 @@ class CadastroPerguntaPage extends GetView {
               backgroundColor: AppColor.background,
               appBar: AppBar(
                 title: TextComponent(
-                    value: 'Cadastrar',
+                    value: 'Cadastrar pergunta',
                     fontFamily: AppFont.Moonget,
                     fontSize: 22),
               ),
@@ -42,7 +45,7 @@ class CadastroPerguntaPage extends GetView {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       TextComponent(
-                                          value: 'Suas perguntas',
+                                          value: 'Sua pergunta',
                                           fontSize: 22),
                                       ButtonStylizedComponent(
                                           padding: const EdgeInsets.symmetric(
@@ -58,41 +61,94 @@ class CadastroPerguntaPage extends GetView {
                                   ),
                                   const Divider(),
                                   const SizedBox(height: 10),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      SizedBox(
-                                        width: 200,
-                                        child: SelectComponent(
+                                  StreamBuilder<List<MateriaModel>>(
+                                    stream: ctrl.getMaterias(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return CircularProgressIndicator(); // Show a loading indicator while waiting for data
+                                      } else if (snapshot.hasError) {
+                                        return Text(
+                                            'Error: ${snapshot.error}'); // Show an error message if there's an error
+                                      } else if (snapshot.hasData &&
+                                          snapshot.data!.isNotEmpty) {
+                                        List<MateriaModel> list =
+                                            snapshot.data!;
+                                        List<MenuItemData> listMenu = [];
+
+                                        listMenu.add(MenuItemData(
+                                            label: 'Nenhuma', value: 'ND'));
+
+                                        for (var i in list) {
+                                          listMenu.add(MenuItemData(
+                                              label: i.nome, value: i.id));
+                                        }
+
+                                        return SelectComponent(
+                                          initialValue: _.idMateria.text,
                                           labelText: 'Matéria',
+                                          menuItemData: listMenu,
                                           primaryColor: AppColor.primary,
-                                          initialValue: 'ND',
                                           onChanged: (value) {
-                                            ctrl.materia = value.toString();
+                                            if (value != 'ND') {
+                                              var index = list.indexWhere(
+                                                  (element) =>
+                                                      element.id == value);
+                                              MateriaModel data = list[index];
+                                              ctrl.materia.text = data.id;
+                                              ctrl.materia.text = data.nome;
+                                            }
                                           },
-                                          menuItemData: const [
-                                            MenuItemData(
-                                                label: 'Todos', value: 'ND')
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 200,
-                                        child: SelectComponent(
+                                        );
+                                      } else {
+                                        return Container();
+                                      }
+                                    },
+                                  ),
+                                  const SizedBox(height: 10),
+                                  StreamBuilder<List<AssuntoModel>>(
+                                    stream: ctrl.getAssuntos(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return CircularProgressIndicator(); // Show a loading indicator while waiting for data
+                                      } else if (snapshot.hasError) {
+                                        return Text(
+                                            'Error: ${snapshot.error}'); // Show an error message if there's an error
+                                      } else if (snapshot.hasData &&
+                                          snapshot.data!.isNotEmpty) {
+                                        List<AssuntoModel> list =
+                                            snapshot.data!;
+                                        List<MenuItemData> listMenu = [];
+
+                                        listMenu.add(MenuItemData(
+                                            label: 'Nenhuma', value: 'ND'));
+
+                                        for (var i in list) {
+                                          listMenu.add(MenuItemData(
+                                              label: i.nome, value: i.id));
+                                        }
+
+                                        return SelectComponent(
+                                          initialValue: _.idAssunto.text,
                                           labelText: 'Assunto',
+                                          menuItemData: listMenu,
                                           primaryColor: AppColor.primary,
-                                          initialValue: 'ND',
                                           onChanged: (value) {
-                                            ctrl.assunto = value.toString();
+                                            if (value != 'ND') {
+                                              var index = list.indexWhere(
+                                                  (element) =>
+                                                      element.id == value);
+                                              AssuntoModel data = list[index];
+                                              ctrl.assunto.text = data.id;
+                                              ctrl.assunto.text = data.nome;
+                                            }
                                           },
-                                          menuItemData: const [
-                                            MenuItemData(
-                                                label: 'Todos', value: 'ND')
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                        );
+                                      } else {
+                                        return Container();
+                                      }
+                                    },
                                   ),
                                   const Divider(),
                                   const SizedBox(height: 10),
@@ -163,21 +219,24 @@ class CadastroPerguntaPage extends GetView {
                                                     Row(
                                                       children: [
                                                         SizedBox(
-                                                            width: 370,
-                                                            child: InputTextComponent(
-                                                                floatingLabelBehavior:
-                                                                    FloatingLabelBehavior
-                                                                        .always,
-                                                                textEditingController:
-                                                                    i,
-                                                                onChanged:
-                                                                    (value) {
-                                                                      ctrl.setDataInput(i, i.text);
+                                                            width: 350,
+                                                            child:
+                                                                InputTextComponent(
+                                                                    floatingLabelBehavior:
+                                                                        FloatingLabelBehavior
+                                                                            .always,
+                                                                    textEditingController:
+                                                                        i,
+                                                                    onChanged:
+                                                                        (value) {
+                                                                      ctrl.setDataInput(
+                                                                          i,
+                                                                          i.text);
                                                                     },
-                                                                hintText:
-                                                                    'Digite uma resposta...',
-                                                                labelText:
-                                                                    'Alternativa ${ctrl.inputsAlternativas.indexOf(i) + 1}')),
+                                                                    hintText:
+                                                                        'Digite uma resposta...',
+                                                                    labelText:
+                                                                        'Alternativa ${ctrl.inputsAlternativas.indexOf(i) + 1}')),
                                                         const SizedBox(
                                                             width: 10),
                                                         ButtonIconCircularComponent(

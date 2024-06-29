@@ -8,8 +8,11 @@ import 'package:get/get.dart';
 import 'package:quiz_enem/controllers/dashboard.controller.dart';
 import 'package:quiz_enem/core/colors.dart';
 import 'package:quiz_enem/core/fonts/fonts.dart';
+import 'package:quiz_enem/models/assunto.model.dart';
 import 'package:quiz_enem/models/pergunta.model.dart';
 import 'package:quiz_enem/routes/app_routes.dart';
+
+import '../../../models/materia.model.dart';
 
 class DashBoardPage extends GetView {
   DashBoardController ctrl = Get.put(DashBoardController());
@@ -64,33 +67,98 @@ class DashBoardPage extends GetView {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                        width: 200,
-                        child: SelectComponent(
-                          labelText: 'Matéria',
-                          primaryColor: AppColor.primary,
-                          initialValue: 'ND',
-                          menuItemData: [
-                            MenuItemData(label: 'Todos', value: 'ND'),
-                            MenuItemData(label: 'Matemática', value: 'Matemática'),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        width: 200,
-                        child: SelectComponent(
-                          labelText: 'Assunto',
-                          primaryColor: AppColor.primary,
-                          initialValue: 'ND',
-                          menuItemData: [
-                            MenuItemData(label: 'Todos', value: 'ND'),
-                            MenuItemData(label: 'Algoritmos', value: 'Algoritmos'),
-                          ],
-                        ),
-                      ),
+                      TextButton(
+                          onPressed: () {
+                            Get.toNamed(Routes.CADASTRO_MATERIA);
+                          },
+                          child: TextComponent(value: 'Cadastrar matéria')),
+                      TextButton(
+                          onPressed: () {
+                            Get.toNamed(Routes.CADASTRO_ASSUNTO);
+                          },
+                          child: TextComponent(value: 'Cadastrar assunto')),
                     ],
                   ),
+                  const SizedBox(height: 10),
+                  StreamBuilder<List<MateriaModel>>(
+                    stream: ctrl.getMaterias(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator(); // Show a loading indicator while waiting for data
+                      } else if (snapshot.hasError) {
+                        return Text(
+                            'Error: ${snapshot.error}'); // Show an error message if there's an error
+                      } else if (snapshot.hasData &&
+                          snapshot.data!.isNotEmpty) {
+                        List<MateriaModel> list = snapshot.data!;
+                        List<MenuItemData> listMenu = [];
+
+                        listMenu
+                            .add(MenuItemData(label: 'Nenhuma', value: 'ND'));
+
+                        for (var i in list) {
+                          listMenu
+                              .add(MenuItemData(label: i.nome, value: i.id));
+                        }
+
+                        return SelectComponent(
+                          labelText: 'Matéria',
+                          menuItemData: listMenu,
+                          primaryColor: AppColor.primary,
+                          onChanged: (value) {
+                            if (value != 'ND') {
+                              var index = list
+                                  .indexWhere((element) => element.id == value);
+                              MateriaModel data = list[index];
+                            }
+                          },
+                        );
+                      } else {
+                        return Container();
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  StreamBuilder<List<AssuntoModel>>(
+                    stream: ctrl.getAssuntos(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator(); // Show a loading indicator while waiting for data
+                      } else if (snapshot.hasError) {
+                        return Text(
+                            'Error: ${snapshot.error}'); // Show an error message if there's an error
+                      } else if (snapshot.hasData &&
+                          snapshot.data!.isNotEmpty) {
+                        List<AssuntoModel> list = snapshot.data!;
+                        List<MenuItemData> listMenu = [];
+
+                        listMenu
+                            .add(MenuItemData(label: 'Nenhuma', value: 'ND'));
+
+                        for (var i in list) {
+                          listMenu
+                              .add(MenuItemData(label: i.nome, value: i.id));
+                        }
+
+                        return SelectComponent(
+                          labelText: 'Assunto',
+                          menuItemData: listMenu,
+                          primaryColor: AppColor.primary,
+                          onChanged: (value) {
+                            if (value != 'ND') {
+                              var index = list
+                                  .indexWhere((element) => element.id == value);
+                              AssuntoModel data = list[index];
+                            }
+                          },
+                        );
+                      } else {
+                        return Container();
+                      }
+                    },
+                  ),
                   const SizedBox(height: 30),
+                  const Divider(),
                   SizedBox(
                       height: 500,
                       child: StreamBuilder<List<PerguntaModel>>(

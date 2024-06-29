@@ -12,7 +12,6 @@ class EditorTexto extends StatefulWidget {
 
 class _EditorTextoState extends State<EditorTexto> {
   ///[controller] create a QuillEditorController to access the editor methods
- 
 
   ///[customToolBarList] pass the custom toolbarList to show only selected styles in the editor
 
@@ -90,7 +89,8 @@ class _EditorTextoState extends State<EditorTexto> {
                     )),
                 InkWell(
                     onTap: () async {
-                      var selectedText = await widget.controller.getSelectedText();
+                      var selectedText =
+                          await widget.controller.getSelectedText();
                       debugPrint('selectedText $selectedText');
                       var selectedHtmlText =
                           await widget.controller.getSelectedHtmlText();
@@ -117,7 +117,7 @@ class _EditorTextoState extends State<EditorTexto> {
                 hintTextPadding: const EdgeInsets.only(left: 20),
                 backgroundColor: _backgroundColor,
                 inputAction: InputAction.newline,
-                onEditingComplete: (s) => debugPrint('Editing completed $s'),
+                onEditingComplete: (s) {},
                 loadingBuilder: (context) {
                   return Center(
                       child: CircularProgressIndicator(
@@ -125,21 +125,11 @@ class _EditorTextoState extends State<EditorTexto> {
                     color: AppColor.primary,
                   ));
                 },
-                onFocusChanged: (focus) {
-                  debugPrint('has focus $focus');
-                  setState(() {
-                    _hasFocus = focus;
-                  });
-                },
-                onTextChanged: (text) => debugPrint('widget text change $text'),
-                onEditorCreated: () {
-                  widget.controller.setText('Uma empresa de consultoria deseja saber a opinião de seus funcionários sobre o plano de benefícios oferecido. Para isso, pretende entrevistá-los pessoalmente. A empresa dispõe de três entrevistadores: A, B e C. Sabe-se que o entrevistador A realiza uma entrevista em 20 minutos, o entrevistador B, em 30 minutos, e o entrevistador C, em 40 minutos. Se cada entrevistador trabalha ininterruptamente por 4 horas, quantas entrevistas, no total, serão realizadas?');
-                  debugPrint('Editor has been loaded');
-                },
-                onEditorResized: (height) =>
-                    debugPrint('Editor resized $height'),
-                onSelectionChanged: (sel) =>
-                    debugPrint('index ${sel.index}, range ${sel.length}'),
+                onFocusChanged: (focus) {},
+                onTextChanged: (text) {},
+                onEditorCreated: () {},
+                onEditorResized: (height) {},
+                onSelectionChanged: (sel) {},
               ),
             )
           ],
