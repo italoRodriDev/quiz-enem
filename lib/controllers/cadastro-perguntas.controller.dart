@@ -31,8 +31,6 @@ class CadastroPerguntasController extends GetxController {
   TextEditingController materia = TextEditingController();
   TextEditingController idAssunto = TextEditingController(text: 'ND');
   TextEditingController assunto = TextEditingController();
-  MateriaModel materiaModel = MateriaModel(id: '', nome: '');
-  AssuntoModel assutoModel = AssuntoModel(id: '', idMateria: '', materia: '', nome: '');
 
   Stream<List<MateriaModel>> getMaterias() {
     return FirebaseFirestore.instance

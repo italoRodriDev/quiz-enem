@@ -45,8 +45,7 @@ class CadastroPerguntaPage extends GetView {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       TextComponent(
-                                          value: 'Sua pergunta',
-                                          fontSize: 22),
+                                          value: 'Sua pergunta', fontSize: 22),
                                       ButtonStylizedComponent(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 12, vertical: 1),
@@ -61,6 +60,9 @@ class CadastroPerguntaPage extends GetView {
                                   ),
                                   const Divider(),
                                   const SizedBox(height: 10),
+                                  EditorTexto(controller: ctrl.quillCtrl),
+                                  const SizedBox(height: 10),
+                                  const Divider(),
                                   StreamBuilder<List<MateriaModel>>(
                                     stream: ctrl.getMaterias(),
                                     builder: (context, snapshot) {
@@ -95,7 +97,7 @@ class CadastroPerguntaPage extends GetView {
                                                   (element) =>
                                                       element.id == value);
                                               MateriaModel data = list[index];
-                                              ctrl.materia.text = data.id;
+                                              ctrl.idMateria.text = data.id;
                                               ctrl.materia.text = data.nome;
                                             }
                                           },
@@ -140,7 +142,7 @@ class CadastroPerguntaPage extends GetView {
                                                   (element) =>
                                                       element.id == value);
                                               AssuntoModel data = list[index];
-                                              ctrl.assunto.text = data.id;
+                                              ctrl.idAssunto.text = data.id;
                                               ctrl.assunto.text = data.nome;
                                             }
                                           },
@@ -150,9 +152,6 @@ class CadastroPerguntaPage extends GetView {
                                       }
                                     },
                                   ),
-                                  const Divider(),
-                                  const SizedBox(height: 10),
-                                  EditorTexto(controller: ctrl.quillCtrl),
                                   const Divider(),
                                   const SizedBox(height: 30),
                                   ValueListenableBuilder(

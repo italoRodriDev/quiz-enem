@@ -117,7 +117,9 @@ class _EditorTextoState extends State<EditorTexto> {
                 hintTextPadding: const EdgeInsets.only(left: 20),
                 backgroundColor: _backgroundColor,
                 inputAction: InputAction.newline,
-                onEditingComplete: (s) {},
+                onEditingComplete: (s) {
+                 
+                },
                 loadingBuilder: (context) {
                   return Center(
                       child: CircularProgressIndicator(
@@ -127,7 +129,9 @@ class _EditorTextoState extends State<EditorTexto> {
                 },
                 onFocusChanged: (focus) {},
                 onTextChanged: (text) {},
-                onEditorCreated: () {},
+                onEditorCreated: () {
+                   widget.controller.setText('Digite sua pergunta...');
+                },
                 onEditorResized: (height) {},
                 onSelectionChanged: (sel) {},
               ),
