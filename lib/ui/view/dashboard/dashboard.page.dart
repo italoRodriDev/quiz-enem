@@ -110,6 +110,8 @@ class DashBoardPage extends GetView {
                               var index = list
                                   .indexWhere((element) => element.id == value);
                               MateriaModel data = list[index];
+                              ctrl.idMateria = data.id;
+                              ctrl.getPerguntasFilter();
                             }
                           },
                         );
@@ -149,6 +151,8 @@ class DashBoardPage extends GetView {
                               var index = list
                                   .indexWhere((element) => element.id == value);
                               AssuntoModel data = list[index];
+                              ctrl.idAssunto = data.id;
+                              ctrl.getPerguntasFilter();
                             }
                           },
                         );
@@ -161,83 +165,79 @@ class DashBoardPage extends GetView {
                   const Divider(),
                   SizedBox(
                       height: 500,
-                      child: StreamBuilder<List<PerguntaModel>>(
-                        stream: ctrl.getPerguntas(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            List<PerguntaModel> list = snapshot.data!;
-                            return ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                itemCount: list.length,
-                                itemBuilder: (context, index) {
-                                  PerguntaModel model = list[index];
-                                  return Card(
-                                      child: Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      TextComponent(
-                                                          value:
-                                                              "Pergunta ${index + 1}",
-                                                          fontSize: 22),
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      TextComponent(
-                                                          color:
-                                                              AppColor.medium,
-                                                          value:
-                                                              "Materia: ${model.materia.toString()}",
-                                                          fontSize: 12),
-                                                      const SizedBox(width: 10),
-                                                      TextComponent(
-                                                          color:
-                                                              AppColor.medium,
-                                                          value:
-                                                              "Assunto: ${model.assunto.toString()}",
-                                                          fontSize: 12),
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  ButtonIconCircularComponent(
-                                                      iconColor:
-                                                          AppColor.danger,
-                                                      iconData:
-                                                          CupertinoIcons.trash,
-                                                      onPressed: () {
-                                                        ctrl.removePergunta(
-                                                            model, index);
-                                                      })
-                                                ],
-                                              )
-                                            ],
-                                          )));
-                                });
-                          } else if (snapshot.hasError) {
-                            return Container();
-                          } else {
-                            return Center(
-                                child: Container(
-                                    padding: const EdgeInsets.only(top: 10),
-                                    child: CircularProgressIndicator()));
-                          }
-                        },
-                      )),
+                      child: ValueListenableBuilder(
+                          valueListenable: ctrl.perguntasEvent,
+                          builder: (context, value, child) {
+                            if (value.isNotEmpty) {
+                              List<PerguntaModel> list = value;
+                              return ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemCount: list.length,
+                                  itemBuilder: (context, index) {
+                                    PerguntaModel model = list[index];
+                                    return Card(
+                                        child: Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        TextComponent(
+                                                            value:
+                                                                "Pergunta ${index + 1}",
+                                                            fontSize: 22),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        TextComponent(
+                                                            color:
+                                                                AppColor.medium,
+                                                            value:
+                                                                "Materia: ${model.materia.toString()}",
+                                                            fontSize: 12),
+                                                        const SizedBox(
+                                                            width: 10),
+                                                        TextComponent(
+                                                            color:
+                                                                AppColor.medium,
+                                                            value:
+                                                                "Assunto: ${model.assunto.toString()}",
+                                                            fontSize: 12),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                    ButtonIconCircularComponent(
+                                                        iconColor:
+                                                            AppColor.danger,
+                                                        iconData: CupertinoIcons
+                                                            .trash,
+                                                        onPressed: () {
+                                                          ctrl.removePergunta(
+                                                              model, index);
+                                                        })
+                                                  ],
+                                                )
+                                              ],
+                                            )));
+                                  });
+                            } else {
+                              return Container();
+                            }
+                          })),
                 ],
               ))));
         });

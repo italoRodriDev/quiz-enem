@@ -287,35 +287,8 @@ class CadastroPerguntaPage extends GetView {
                                                   children: [
                                                     const SizedBox(height: 10),
                                                     Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
-                                                        SizedBox(
-                                                            width: 370,
-                                                            child: Row(
-                                                              children: [
-                                                                Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    TextComponent(
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .w600,
-                                                                        value:
-                                                                            'Alternativa ${ctrl.inputsAlternativas.indexOf(i) + 1}'),
-                                                                    SizedBox(
-                                                                        width:
-                                                                            350,
-                                                                        child: TextComponent(
-                                                                            value: i.text.toString().length > 65
-                                                                                ? '${i.text.toString().substring(0, 65)}...'
-                                                                                : i.text.toString()))
-                                                                  ],
-                                                                )
-                                                              ],
-                                                            )),
-                                                        const SizedBox(
-                                                            width: 10),
                                                         ValueListenableBuilder(
                                                             valueListenable: ctrl
                                                                 .respostaCorretaEvent,
@@ -345,6 +318,32 @@ class CadastroPerguntaPage extends GetView {
                                                                         i.text;
                                                                   });
                                                             })),
+                                                        SizedBox(
+                                                            child: Row(
+                                                              children: [
+                                                                Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    TextComponent(
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w600,
+                                                                        value:
+                                                                            'Alternativa ${ctrl.inputsAlternativas.indexOf(i) + 1}'),
+                                                                    SizedBox(
+                                                                        width:
+                                                                            350,
+                                                                        child: TextComponent(
+                                                                            value: i.text.toString().length > 65
+                                                                                ? '${i.text.toString().substring(0, 65)}...'
+                                                                                : i.text.toString()))
+                                                                  ],
+                                                                )
+                                                              ],
+                                                            )),
+                                                        
                                                       ],
                                                     ),
                                                     const Divider(),

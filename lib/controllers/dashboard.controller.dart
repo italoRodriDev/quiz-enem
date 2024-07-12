@@ -11,6 +11,16 @@ import '../models/materia.model.dart';
 class DashBoardController extends GetxController {
   late BuildContext context;
   final firestore = FirebaseFirestore.instance;
+  ValueNotifier<List<PerguntaModel>> perguntasEvent =
+      ValueNotifier<List<PerguntaModel>>([]);
+  dynamic idMateria;
+  dynamic idAssunto;
+
+  @override
+  void onReady() {
+    getPerguntas();
+    super.onInit();
+  }
 
   Stream<List<MateriaModel>> getMaterias() {
     return FirebaseFirestore.instance
@@ -34,15 +44,50 @@ class DashBoardController extends GetxController {
             .toList());
   }
 
-  Stream<List<PerguntaModel>> getPerguntas() {
-    return FirebaseFirestore.instance
+  getPerguntas() {
+    List<PerguntaModel> list = [];
+    FirebaseFirestore.instance
         .collection('Usuarios')
         .doc('idUser')
         .collection('Perguntas')
         .snapshots()
         .map((snapShot) => snapShot.docs
             .map((doc) => PerguntaModel.fromJson(doc.data()))
-            .toList());
+            .toList())
+        .forEach((element) {
+      for (var i in element) {
+        list.add(i);
+      }
+      perguntasEvent.value = list;
+    });
+  }
+
+  getPerguntasFilter() {
+    perguntasEvent.value.clear();
+    List<PerguntaModel> list = [];
+    var ref = FirebaseFirestore.instance
+        .collection('Usuarios')
+        .doc('idUser')
+        .collection('Perguntas');
+    if (idMateria != null) {
+      ref.where('idMateria', isEqualTo: idMateria);
+    }
+
+    if (idAssunto != null) {
+      ref.where('idAssunto', isEqualTo: idAssunto);
+    }
+
+    ref
+        .snapshots()
+        .map((snapShot) => snapShot.docs
+            .map((doc) => PerguntaModel.fromJson(doc.data()))
+            .toList())
+        .forEach((element) {
+      for (var i in element) {
+        list.add(i);
+      }
+      perguntasEvent.value = list;
+    });
   }
 
   removePergunta(PerguntaModel item, int index) async {
