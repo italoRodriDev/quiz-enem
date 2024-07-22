@@ -18,6 +18,10 @@ class CadastroPerguntasController extends GetxController {
   QuillEditorController quillCtrl = QuillEditorController();
   ValueNotifier<List<MenuItemData>> alternativasSelecionaveisEvent =
       ValueNotifier<List<MenuItemData>>([]);
+  ValueNotifier<List<MateriaModel>> listMateriasEvent =
+      ValueNotifier<List<MateriaModel>>([]);
+  ValueNotifier<List<AssuntoModel>> listAssuntosEvent =
+      ValueNotifier<List<AssuntoModel>>([]);
   ValueNotifier<bool> cadastroPerguntasEvent = ValueNotifier<bool>(true);
   ValueNotifier<String> respostaCorretaEvent = ValueNotifier<String>('ND');
   List<TextEditingController> inputsAlternativas = [
@@ -32,26 +36,47 @@ class CadastroPerguntasController extends GetxController {
   TextEditingController idAssunto = TextEditingController(text: 'ND');
   TextEditingController assunto = TextEditingController();
 
-  Stream<List<MateriaModel>> getMaterias() {
-    return FirebaseFirestore.instance
+  @override
+  void onInit() {
+    getMaterias();
+    getAssuntos();
+    super.onInit();
+  }
+
+  getMaterias() {
+    List<MateriaModel> list = [];
+    FirebaseFirestore.instance
         .collection('Materias')
         .doc('idUser')
         .collection('Materias')
         .snapshots()
         .map((snapShot) => snapShot.docs
             .map((doc) => MateriaModel.fromJson(doc.data()))
-            .toList());
+            .toList())
+        .forEach((element) {
+      for (var i in element) {
+        list.add(i);
+      }
+      listMateriasEvent.value = list;
+    });
   }
 
-  Stream<List<AssuntoModel>> getAssuntos() {
-    return FirebaseFirestore.instance
+  getAssuntos() {
+    List<AssuntoModel> list = [];
+    FirebaseFirestore.instance
         .collection('Materias')
         .doc('idUser')
         .collection('Assuntos')
         .snapshots()
         .map((snapShot) => snapShot.docs
             .map((doc) => AssuntoModel.fromJson(doc.data()))
-            .toList());
+            .toList())
+        .forEach((element) {
+      for (var i in element) {
+        list.add(i);
+      }
+      listAssuntosEvent.value = list;
+    });
   }
 
   addPergunta() {
@@ -83,52 +108,76 @@ class CadastroPerguntasController extends GetxController {
     var index = inputsAlternativas.indexOf(item);
     var data = inputsAlternativas[index];
     inputsAlternativas[index].text = textValue;
-     inputsAlternativas[index].selection = TextSelection.fromPosition(
-      TextPosition(offset:  inputsAlternativas[index].text.length),
+    inputsAlternativas[index].selection = TextSelection.fromPosition(
+      TextPosition(offset: inputsAlternativas[index].text.length),
     );
     update();
   }
 
-  salvarPergunta() async {
-    var textPergunta = await quillCtrl.getText();
-
-    var ref = firestore
-        .collection('Usuarios')
-        .doc('idUser')
-        .collection('Perguntas')
-        .doc();
-
-    List<String> list = [];
-
-    for (var i in inputsAlternativas) {
-      list.add(i.text.toString());
+  bool validForm() {
+    bool result = false;
+    if (quillCtrl.getText().toString().isNotEmpty) {
+      if (validarDataInputs() == false) {
+        if (materia.text.isNotEmpty) {
+          if (assunto.text.isNotEmpty) {
+            result = true;
+          } else {
+            SnackbarComponent.show(context, text: 'Selecione o assunto.');
+          }
+        } else {
+          SnackbarComponent.show(context, text: 'Selecione a matéria.');
+        }
+      } else {
+        SnackbarComponent.show(context, text: 'Crie as respostas.');
+      }
+    } else {
+      SnackbarComponent.show(context, text: 'Digite a pergunta.');
     }
+    return result;
+  }
 
-    PerguntaModel data = PerguntaModel(
-        id: ref.id,
-        idMateria: idMateria.text,
-        materia: materia.text,
-        idAssunto: idAssunto.text,
-        assunto: assunto.text,
-        pergunta: textPergunta,
-        alternativas: list,
-        respostaCorreta: respostaCorretaEvent.value);
+  salvarPergunta() async {
+    if (validForm() == true) {
+      var textPergunta = await quillCtrl.getText();
 
-    ref.set(data.toJson()).then((value) async {
-      await AlertDialogPopupsComponent.show(context,
-          titleText: 'Salvo com sucesso',
-          contentText: 'Fique a vontade para continuar',
-          imageUrl: '',
-          confirmText: 'Continuar',
-          cancelText: 'Cancelar',
-          colorPrimary: AppColor.primary,
-          fontSizeTitle: 22,
-          colorText: AppColor.textColor, onPressedConfirm: () {
-        Get.back();
+      var ref = firestore
+          .collection('Usuarios')
+          .doc('idUser')
+          .collection('Perguntas')
+          .doc();
+
+      List<String> list = [];
+
+      for (var i in inputsAlternativas) {
+        list.add(i.text.toString());
+      }
+
+      PerguntaModel data = PerguntaModel(
+          id: ref.id,
+          idMateria: idMateria.text,
+          materia: materia.text,
+          idAssunto: idAssunto.text,
+          assunto: assunto.text,
+          pergunta: textPergunta,
+          alternativas: list,
+          respostaCorreta: respostaCorretaEvent.value);
+
+      ref.set(data.toJson()).then((value) async {
+        await AlertDialogPopupsComponent.show(context,
+            titleText: 'Salvo com sucesso',
+            contentText: 'Fique a vontade para continuar',
+            imageUrl: '',
+            confirmText: 'Continuar',
+            cancelText: 'Cancelar',
+            colorPrimary: AppColor.primary,
+            fontSizeTitle: 22,
+            colorText: AppColor.textColor, onPressedConfirm: () {
+          Get.back();
+        });
+      }).catchError((error) async {
+        await SnackbarComponent.show(context, text: 'Error ao salvar');
       });
-    }).catchError((error) async {
-      await SnackbarComponent.show(context, text: 'Error ao salvar');
-    });
+    }
   }
 
   resetDataInputs() {
@@ -141,12 +190,12 @@ class CadastroPerguntasController extends GetxController {
   validarDataInputs() {
     List<bool> inputEmpty = [];
     for (var input in inputsAlternativas) {
-       print(input.text);
+      print(input.text);
       if (input.text.isNotEmpty) {
         inputEmpty.add(false);
       }
     }
-   
+
     return inputEmpty.isNotEmpty ? false : true;
   }
 }

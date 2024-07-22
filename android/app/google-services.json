@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "157146722057",
+    "project_id": "app-estudos-ffae8",
+    "storage_bucket": "app-estudos-ffae8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:157146722057:android:fb1fbe816c46f0e9c4add8",
+        "android_client_info": {
+          "package_name": "com.example.quiz_enem"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD94ChWTQU67SYr6vSSgVg_Ao-KoKrBl_E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -21,7 +21,7 @@ void main() async {
     title: 'QuizEnem',
     debugShowCheckedModeBanner: false,
     getPages: AppPages.routes,
-    initialRoute: Routes.INTRO,
+    initialRoute: Routes.DASH_BOARD,
     theme: appThemeData,
   ));
 }

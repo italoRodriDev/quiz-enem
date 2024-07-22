@@ -51,7 +51,7 @@ class AuthController extends GetxController {
     final user = firebaseAuth.currentUser;
     if (user != null) {
       if (user.emailVerified) {
-        await Get.toNamed(Routes.TABS_MENU);
+        await Get.toNamed(Routes.DASH_BOARD);
       } else {
         await AlertDialogPopupsComponent.show(context,
             titleText: 'Verifique seu e-mail',
@@ -173,7 +173,7 @@ class AuthController extends GetxController {
 
   signOut() {
     FirebaseAuth.instance.signOut().then((value) {
-      Get.offAndToNamed(Routes.INTRO);
+      Get.offAndToNamed(Routes.DASH_BOARD);
     });
   }
 

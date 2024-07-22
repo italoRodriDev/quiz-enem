@@ -32,6 +32,20 @@ class CadastroPerguntaPage extends GetView {
                     value: 'Cadastrar pergunta',
                     fontFamily: AppFont.Moonget,
                     fontSize: 22),
+                actions: [
+                  Padding(
+                      padding: EdgeInsets.all(2),
+                      child: ButtonStylizedComponent(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 1),
+                          label: TextComponent(
+                              value: 'Salvar',
+                              fontFamily: AppFont.Moonget,
+                              fontSize: 16),
+                          onPressed: () {
+                            ctrl.salvarPergunta();
+                          }))
+                ],
               ),
               body: SafeArea(
                   child: ContentComponent(
@@ -46,16 +60,6 @@ class CadastroPerguntaPage extends GetView {
                                     children: [
                                       TextComponent(
                                           value: 'Sua pergunta', fontSize: 22),
-                                      ButtonStylizedComponent(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 12, vertical: 1),
-                                          label: TextComponent(
-                                              value: 'Salvar',
-                                              fontFamily: AppFont.Moonget,
-                                              fontSize: 16),
-                                          onPressed: () {
-                                            ctrl.salvarPergunta();
-                                          })
                                     ],
                                   ),
                                   const Divider(),
@@ -63,19 +67,11 @@ class CadastroPerguntaPage extends GetView {
                                   EditorTexto(controller: ctrl.quillCtrl),
                                   const SizedBox(height: 10),
                                   const Divider(),
-                                  StreamBuilder<List<MateriaModel>>(
-                                    stream: ctrl.getMaterias(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return CircularProgressIndicator(); // Show a loading indicator while waiting for data
-                                      } else if (snapshot.hasError) {
-                                        return Text(
-                                            'Error: ${snapshot.error}'); // Show an error message if there's an error
-                                      } else if (snapshot.hasData &&
-                                          snapshot.data!.isNotEmpty) {
-                                        List<MateriaModel> list =
-                                            snapshot.data!;
+                                  ValueListenableBuilder(
+                                      valueListenable: ctrl.listMateriasEvent,
+                                      builder: (context,
+                                          List<MateriaModel> value, child) {
+                                        List<MateriaModel> list = value;
                                         List<MenuItemData> listMenu = [];
 
                                         listMenu.add(MenuItemData(
@@ -102,25 +98,12 @@ class CadastroPerguntaPage extends GetView {
                                             }
                                           },
                                         );
-                                      } else {
-                                        return Container();
-                                      }
-                                    },
-                                  ),
+                                      }),
                                   const SizedBox(height: 10),
-                                  StreamBuilder<List<AssuntoModel>>(
-                                    stream: ctrl.getAssuntos(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return CircularProgressIndicator(); // Show a loading indicator while waiting for data
-                                      } else if (snapshot.hasError) {
-                                        return Text(
-                                            'Error: ${snapshot.error}'); // Show an error message if there's an error
-                                      } else if (snapshot.hasData &&
-                                          snapshot.data!.isNotEmpty) {
-                                        List<AssuntoModel> list =
-                                            snapshot.data!;
+                                  ValueListenableBuilder(
+                                      valueListenable: ctrl.listAssuntosEvent,
+                                      builder: (context, value, child) {
+                                        List<AssuntoModel> list = value;
                                         List<MenuItemData> listMenu = [];
 
                                         listMenu.add(MenuItemData(
@@ -147,11 +130,7 @@ class CadastroPerguntaPage extends GetView {
                                             }
                                           },
                                         );
-                                      } else {
-                                        return Container();
-                                      }
-                                    },
-                                  ),
+                                      }),
                                   const Divider(),
                                   const SizedBox(height: 30),
                                   ValueListenableBuilder(
@@ -217,10 +196,8 @@ class CadastroPerguntaPage extends GetView {
                                                     const SizedBox(height: 20),
                                                     Row(
                                                       children: [
-                                                        SizedBox(
-                                                            width: 350,
-                                                            child:
-                                                                InputTextComponent(
+                                                        Expanded(child: 
+                                                        InputTextComponent(
                                                                     floatingLabelBehavior:
                                                                         FloatingLabelBehavior
                                                                             .always,
@@ -238,6 +215,7 @@ class CadastroPerguntaPage extends GetView {
                                                                         'Alternativa ${ctrl.inputsAlternativas.indexOf(i) + 1}')),
                                                         const SizedBox(
                                                             width: 10),
+                                                        /*
                                                         ButtonIconCircularComponent(
                                                             iconData:
                                                                 CupertinoIcons
@@ -253,6 +231,7 @@ class CadastroPerguntaPage extends GetView {
                                                               ctrl.removerPergunta(
                                                                   i);
                                                             })
+                                                        */
                                                       ],
                                                     )
                                                   ],
@@ -261,7 +240,7 @@ class CadastroPerguntaPage extends GetView {
                                               ButtonStylizedComponent(
                                                   label: TextComponent(
                                                       value:
-                                                          'Continuar cadastro',
+                                                          'Selecionar resposta correta',
                                                       fontSize: 18,
                                                       fontFamily:
                                                           AppFont.Moonget),
@@ -287,7 +266,9 @@ class CadastroPerguntaPage extends GetView {
                                                   children: [
                                                     const SizedBox(height: 10),
                                                     Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: [
                                                         ValueListenableBuilder(
                                                             valueListenable: ctrl
@@ -318,32 +299,32 @@ class CadastroPerguntaPage extends GetView {
                                                                         i.text;
                                                                   });
                                                             })),
-                                                        SizedBox(
+                                                        Expanded(
                                                             child: Row(
+                                                          children: [
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
                                                               children: [
-                                                                Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    TextComponent(
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .w600,
-                                                                        value:
-                                                                            'Alternativa ${ctrl.inputsAlternativas.indexOf(i) + 1}'),
-                                                                    SizedBox(
-                                                                        width:
-                                                                            350,
-                                                                        child: TextComponent(
-                                                                            value: i.text.toString().length > 65
-                                                                                ? '${i.text.toString().substring(0, 65)}...'
-                                                                                : i.text.toString()))
-                                                                  ],
-                                                                )
+                                                                const SizedBox(width: 5),
+                                                                TextComponent(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    value:
+                                                                        'Alternativa ${ctrl.inputsAlternativas.indexOf(i) + 1}'),
+                                                                SizedBox(
+                                                                    width: 350,
+                                                                    child: TextComponent(
+                                                                        value: i.text.toString().length >
+                                                                                65
+                                                                            ? '${i.text.toString().substring(0, 65)}...'
+                                                                            : i.text.toString()))
                                                               ],
-                                                            )),
-                                                        
+                                                            )
+                                                          ],
+                                                        )),
                                                       ],
                                                     ),
                                                     const Divider(),
