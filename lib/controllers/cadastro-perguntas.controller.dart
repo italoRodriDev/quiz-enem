@@ -22,14 +22,16 @@ class CadastroPerguntasController extends GetxController {
       ValueNotifier<List<MateriaModel>>([]);
   ValueNotifier<List<AssuntoModel>> listAssuntosEvent =
       ValueNotifier<List<AssuntoModel>>([]);
+  
+  ValueNotifier<bool> btnSaveEvent = ValueNotifier<bool>(true);
   ValueNotifier<bool> cadastroPerguntasEvent = ValueNotifier<bool>(true);
   ValueNotifier<String> respostaCorretaEvent = ValueNotifier<String>('ND');
   List<TextEditingController> inputsAlternativas = [
-    TextEditingController(text: ''),
-    TextEditingController(text: ''),
-    TextEditingController(text: ''),
-    TextEditingController(text: ''),
-    TextEditingController(text: ''),
+    TextEditingController(text: 'A'),
+    TextEditingController(text: 'B'),
+    TextEditingController(text: 'C'),
+    TextEditingController(text: 'D'),
+    TextEditingController(text: 'NDA'),
   ];
   TextEditingController idMateria = TextEditingController(text: 'ND');
   TextEditingController materia = TextEditingController();

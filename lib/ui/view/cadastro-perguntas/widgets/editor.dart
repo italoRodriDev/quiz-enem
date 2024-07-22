@@ -61,7 +61,7 @@ class _EditorTextoState extends State<EditorTexto> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        height: 200,
+        height: 280,
         child: Column(
           children: [
             ToolBar(

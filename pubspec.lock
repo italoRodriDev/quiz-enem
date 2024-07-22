@@ -194,10 +194,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_crise
-      sha256: "02ac748bbb34c03a62400cede3768ffd29834602bb8476a197be42bf84ede7f1"
+      sha256: "4d2f1813a0c8ec2f135f313ba976398e9685af228f17d745f8556bcabd64d085"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.20"
+    version: "0.0.33"
   flutter_lints:
     dependency: "direct dev"
     description:
