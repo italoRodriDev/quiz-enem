@@ -6,8 +6,8 @@ import 'package:flutter_crise/components/input-text.component.dart';
 import 'package:flutter_crise/components/select.component.dart';
 import 'package:flutter_crise/components/text.component.dart';
 import 'package:get/get.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 import 'package:quiz_enem/controllers/cadastro-perguntas.controller.dart';
-import 'package:quiz_enem/routes/app_routes.dart';
 
 import '../../../core/colors.dart';
 import '../../../core/fonts/fonts.dart';
@@ -25,46 +25,54 @@ class CadastroPerguntaPage extends GetView {
     return GetBuilder(
         init: ctrl,
         builder: (_) {
-          return Scaffold(
-              backgroundColor: AppColor.background,
-              appBar: AppBar(
-                title: TextComponent(
-                    value: 'Cadastrar pergunta',
-                    fontFamily: AppFont.Moonget,
-                    fontSize: 22),
-                actions: [
-                  ValueListenableBuilder(
-                      valueListenable: ctrl.btnSaveEvent,
-                      builder: (context, value, child) {
-                        if (value == true) {
-                          return Padding(
-                              padding: EdgeInsets.all(5),
-                              child: ButtonStylizedComponent(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 1),
-                                  label: TextComponent(
-                                      value: 'Salvar',
-                                      fontFamily: AppFont.Moonget,
-                                      fontSize: 16),
-                                  onPressed: () {
-                                    ctrl.salvarPergunta();
-                                  }));
-                        } else {
-                          return Container();
-                        }
-                      })
-                ],
-              ),
-              body: SafeArea(
-                  child: ContentComponent(
-                      content: Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              buildLadoEsquerdo(context, _),
-                              buildLadoDireito(context, _),
-                            ],
-                          )))));
+          return WillPopScope(
+              onWillPop: () async => false,
+              child: LoadingOverlay(
+                  opacity: 1.0,
+                  progressIndicator:
+                      CircularProgressIndicator(color: AppColor.primary),
+                  color: Colors.white,
+                  isLoading: ctrl.isLoading,
+                  child: Scaffold(
+                      backgroundColor: AppColor.background,
+                      appBar: AppBar(
+                        title: TextComponent(
+                            value: 'Cadastrar pergunta',
+                            fontFamily: AppFont.Moonget,
+                            fontSize: 22),
+                        actions: [
+                          ValueListenableBuilder(
+                              valueListenable: ctrl.btnSaveEvent,
+                              builder: (context, value, child) {
+                                if (value == true) {
+                                  return Padding(
+                                      padding: EdgeInsets.all(5),
+                                      child: ButtonStylizedComponent(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 1),
+                                          label: TextComponent(
+                                              value: 'Salvar',
+                                              fontFamily: AppFont.Moonget,
+                                              fontSize: 16),
+                                          onPressed: () {
+                                            ctrl.salvarPergunta();
+                                          }));
+                                } else {
+                                  return Container();
+                                }
+                              })
+                        ],
+                      ),
+                      body: SafeArea(
+                          child: ContentComponent(
+                              content: Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    children: [
+                                      buildLadoEsquerdo(context, _),
+                                      buildLadoDireito(context, _),
+                                    ],
+                                  )))))));
         });
   }
 

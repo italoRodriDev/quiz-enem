@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:quill_html_editor/quill_html_editor.dart';
 import 'package:quiz_enem/core/colors.dart';
 import 'package:quiz_enem/models/pergunta.model.dart';
+import 'package:quiz_enem/routes/app_routes.dart';
 
 import '../models/assunto.model.dart';
 import '../models/materia.model.dart';
@@ -22,8 +23,9 @@ class CadastroPerguntasController extends GetxController {
       ValueNotifier<List<MateriaModel>>([]);
   ValueNotifier<List<AssuntoModel>> listAssuntosEvent =
       ValueNotifier<List<AssuntoModel>>([]);
-  
-  ValueNotifier<bool> btnSaveEvent = ValueNotifier<bool>(true);
+
+  bool isLoading = false;
+  ValueNotifier<bool> btnSaveEvent = ValueNotifier<bool>(false);
   ValueNotifier<bool> cadastroPerguntasEvent = ValueNotifier<bool>(true);
   ValueNotifier<String> respostaCorretaEvent = ValueNotifier<String>('ND');
   List<TextEditingController> inputsAlternativas = [
@@ -164,19 +166,14 @@ class CadastroPerguntasController extends GetxController {
           alternativas: list,
           respostaCorreta: respostaCorretaEvent.value);
 
+      setLoading(true);
       ref.set(data.toJson()).then((value) async {
-        await AlertDialogPopupsComponent.show(context,
-            titleText: 'Salvo com sucesso',
-            contentText: 'Fique a vontade para continuar',
-            imageUrl: '',
-            confirmText: 'Continuar',
-            cancelText: 'Cancelar',
-            colorPrimary: AppColor.primary,
-            fontSizeTitle: 22,
-            colorText: AppColor.textColor, onPressedConfirm: () {
-          Get.back();
-        });
+        resetDataInputs();
+        setLoading(false);
+        await SnackbarComponent.show(context, text: 'Salvo com sucesso!', backgroundColor: AppColor.success, textColor: Colors.white);
+        Get.offAndToNamed(Routes.DASH_BOARD);
       }).catchError((error) async {
+        setLoading(false);
         await SnackbarComponent.show(context, text: 'Error ao salvar');
       });
     }
@@ -186,6 +183,9 @@ class CadastroPerguntasController extends GetxController {
     for (var input in inputsAlternativas) {
       input.text = '';
     }
+    cadastroPerguntasEvent.value = true;
+    btnSaveEvent.value = false;
+    isLoading = false;
     update();
   }
 
@@ -199,5 +199,10 @@ class CadastroPerguntasController extends GetxController {
     }
 
     return inputEmpty.isNotEmpty ? false : true;
+  }
+
+  setLoading(value) {
+    isLoading = value;
+    update();
   }
 }
