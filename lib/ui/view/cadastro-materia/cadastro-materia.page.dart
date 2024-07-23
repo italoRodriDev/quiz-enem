@@ -5,11 +5,13 @@ import 'package:flutter_crise/components/content.component.dart';
 import 'package:flutter_crise/components/input-text.component.dart';
 import 'package:flutter_crise/components/text.component.dart';
 import 'package:get/get.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 import 'package:quiz_enem/controllers/cadastro-materia.controller.dart';
 import 'package:quiz_enem/core/colors.dart';
 import 'package:quiz_enem/models/materia.model.dart';
 
 import '../../../core/fonts/fonts.dart';
+import '../../../routes/app_routes.dart';
 
 class CadastroMateriaPage extends GetView {
   CadastroMateriaController ctrl = Get.put(CadastroMateriaController());
@@ -21,122 +23,151 @@ class CadastroMateriaPage extends GetView {
     return GetBuilder(
         init: ctrl,
         builder: (_) {
-          return Scaffold(
-              appBar: AppBar(
-                actions: [
-                  Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: ButtonStylizedComponent(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 30),
-                          borderRadius: 30,
-                          label: TextComponent(
-                              value: 'Matérias', fontFamily: AppFont.Moonget),
-                          onPressed: () {
-                            ctrl.saveData();
-                          }))
-                ],
-                title: TextComponent(
-                    value: 'Assuntos',
-                    fontFamily: AppFont.Moonget,
-                    fontSize: 22),
-              ),
-              body: SafeArea(
-                  child: ContentComponent(
-                      content: Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              const SizedBox(height: 30),
-                              InputTextComponent(
-                                textEditingController: ctrl.materia,
-                                labelText: 'Nome da matéria',
-                                hintText: 'Digite o nome da matéria...',
-                              ),
-                              SizedBox(height: 30),
-                              ButtonStylizedComponent(
+          return WillPopScope(
+              onWillPop: () async => false,
+              child: LoadingOverlay(
+                  opacity: 1.0,
+                  progressIndicator:
+                      CircularProgressIndicator(color: AppColor.primary),
+                  color: Colors.white,
+                  isLoading: ctrl.isLoading,
+                  child: Scaffold(
+                      appBar: AppBar(
+                        automaticallyImplyLeading: false,
+                        backgroundColor: AppColor.primary,
+                        title: TextComponent(
+                            value: 'Minhas matérias', fontSize: 22),
+                        actions: [
+                          Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: ButtonStylizedComponent(
+                                  color: AppColor.danger,
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 1),
                                   label: TextComponent(
-                                      value: 'Salvar',
-                                      fontFamily: AppFont.Moonget,
-                                      fontSize: 16),
+                                      value: 'Voltar', fontSize: 16),
                                   onPressed: () {
-                                    ctrl.saveData();
-                                  }),
-                              const SizedBox(height: 30),
-                              const Divider(),
-                              StreamBuilder<List<MateriaModel>>(
-                                stream: ctrl.getMaterias(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    List<MateriaModel> list = snapshot.data!;
-                                    return ListView.builder(
-                                        scrollDirection: Axis.vertical,
-                                        shrinkWrap: true,
-                                        itemCount: list.length,
-                                        itemBuilder: (context, index) {
-                                          MateriaModel model = list[index];
-                                          return Card(
-                                              child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(10),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Row(
+                                    Get.offAndToNamed(Routes.DASH_BOARD);
+                                  })),
+                        ],
+                      ),
+                      body: SafeArea(
+                          child: ContentComponent(
+                              content: Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    children: [
+                                      TextComponent(
+                                          value: 'Cadastre uma nova matéria',
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold),
+                                      const SizedBox(height: 10),
+                                      InputTextComponent(
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.always,
+                                        textEditingController: ctrl.materia,
+                                        labelText: 'Nome da matéria',
+                                        hintText: 'Digite o nome da matéria...',
+                                      ),
+                                      const SizedBox(height: 30),
+                                      Row(
+                                        children: [
+                                          ButtonStylizedComponent(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 1),
+                                              label: TextComponent(
+                                                  value: 'Salvar',
+                                                  fontSize: 16),
+                                              onPressed: () {
+                                                ctrl.saveData();
+                                              }),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 30),
+                                      const Divider(),
+                                      StreamBuilder<List<MateriaModel>>(
+                                        stream: ctrl.getMaterias(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            List<MateriaModel> list =
+                                                snapshot.data!;
+                                            return ListView.builder(
+                                                scrollDirection: Axis.vertical,
+                                                shrinkWrap: true,
+                                                itemCount: list.length,
+                                                itemBuilder: (context, index) {
+                                                  MateriaModel model =
+                                                      list[index];
+                                                  return Card(
+                                                      color: AppColor.primary,
+                                                      child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(10),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
                                                             children: [
-                                                              TextComponent(
-                                                                  value: model
-                                                                      .nome,
-                                                                  fontSize: 22),
+                                                              Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Row(
+                                                                    children: [
+                                                                      SizedBox(
+                                                                          width:
+                                                                              320,
+                                                                          child: TextComponent(
+                                                                              color: Colors.white,
+                                                                              value: model.nome,
+                                                                              fontWeight: FontWeight.w600,
+                                                                              fontSize: 18)),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .end,
+                                                                children: [
+                                                                  ButtonIconCircularComponent(
+                                                                      iconColor:
+                                                                          AppColor
+                                                                              .danger,
+                                                                      iconData:
+                                                                          CupertinoIcons
+                                                                              .trash,
+                                                                      onPressed:
+                                                                          () {
+                                                                        ctrl.remove(
+                                                                            model,
+                                                                            index);
+                                                                      })
+                                                                ],
+                                                              )
                                                             ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          ButtonIconCircularComponent(
-                                                              iconColor:
-                                                                  AppColor
-                                                                      .danger,
-                                                              iconData:
-                                                                  CupertinoIcons
-                                                                      .trash,
-                                                              onPressed: () {
-                                                                ctrl.remove(
-                                                                    model,
-                                                                    index);
-                                                              })
-                                                        ],
-                                                      )
-                                                    ],
-                                                  )));
-                                        });
-                                  } else if (snapshot.hasError) {
-                                    return Container();
-                                  } else {
-                                    return Center(
-                                        child: Container(
-                                            padding:
-                                                const EdgeInsets.only(top: 10),
-                                            child:
-                                                const CircularProgressIndicator()));
-                                  }
-                                },
-                              ),
-                            ],
-                          )))));
+                                                          )));
+                                                });
+                                          } else if (snapshot.hasError) {
+                                            return Container();
+                                          } else {
+                                            return Center(
+                                                child: Container(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 10),
+                                                    child:
+                                                        const CircularProgressIndicator()));
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  )))))));
         });
   }
 }

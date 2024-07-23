@@ -15,9 +15,10 @@ class CadastroAssuntoController extends GetxController {
   TextEditingController assunto = TextEditingController();
 
   ValueNotifier<List<dynamic>> listPumpEvent = ValueNotifier<List<dynamic>>([]);
+  bool isLoading = false;
 
   Stream<List<MateriaModel>> getMaterias() {
-    return FirebaseFirestore.instance
+    return firestore
         .collection('Materias')
         .doc('idUser')
         .collection('Materias')
@@ -28,7 +29,7 @@ class CadastroAssuntoController extends GetxController {
   }
 
   Stream<List<AssuntoModel>> getAssuntos() {
-    return FirebaseFirestore.instance
+    return firestore
         .collection('Materias')
         .doc('idUser')
         .collection('Assuntos')
@@ -77,16 +78,19 @@ class CadastroAssuntoController extends GetxController {
         confirmText: 'Excluir',
         cancelText: 'Cancelar',
         onPressedCancel: () {}, onPressedConfirm: () {
-      FirebaseFirestore.instance
+      setLoading(true);
+      firestore
           .collection('Materias')
           .doc('idUser')
           .collection('Assuntos')
           .doc(model.id)
           .delete()
-          .then((value) {
-        SnackbarComponent.show(context, text: 'Excluido com sucesso');
-      }).catchError((error) {
-        SnackbarComponent.show(context, text: 'Erro ao excluir');
+          .then((value) async {
+        setLoading(false);
+        await SnackbarComponent.show(context, text: 'Excluido com sucesso');
+      }).catchError((error) async {
+         setLoading(false);
+        await SnackbarComponent.show(context, text: 'Erro ao excluir');
       });
     });
   }
@@ -95,6 +99,11 @@ class CadastroAssuntoController extends GetxController {
     idMateria.clear();
     materia.clear();
     assunto.clear();
+    update();
+  }
+
+  setLoading(value) {
+    isLoading = value;
     update();
   }
 }

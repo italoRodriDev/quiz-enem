@@ -11,9 +11,10 @@ class CadastroMateriaController extends GetxController {
   final firestore = FirebaseFirestore.instance;
 
   TextEditingController materia = TextEditingController();
+  bool isLoading = false;
 
   Stream<List<MateriaModel>> getMaterias() {
-    return FirebaseFirestore.instance
+    return firestore
         .collection('Materias')
         .doc('idUser')
         .collection('Materias')
@@ -51,22 +52,30 @@ class CadastroMateriaController extends GetxController {
         confirmText: 'Excluir',
         cancelText: 'Cancelar',
         onPressedCancel: () {}, onPressedConfirm: () {
-      FirebaseFirestore.instance
+      setLoading(true);
+      firestore
           .collection('Materias')
           .doc('idUser')
           .collection('Materias')
           .doc(model.id)
           .delete()
-          .then((value) {
-        SnackbarComponent.show(context, text: 'Excluido com sucesso');
-      }).catchError((error) {
-        SnackbarComponent.show(context, text: 'Erro ao excluir');
+          .then((value) async {
+        setLoading(false);
+        await SnackbarComponent.show(context, text: 'Excluido com sucesso');
+      }).catchError((error) async {
+        setLoading(false);
+        await SnackbarComponent.show(context, text: 'Erro ao excluir');
       });
     });
   }
 
   resetData() {
     materia.clear();
+    update();
+  }
+
+  setLoading(value) {
+    isLoading = value;
     update();
   }
 }

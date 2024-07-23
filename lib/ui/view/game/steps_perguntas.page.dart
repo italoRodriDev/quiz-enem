@@ -1,11 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crise/components/alert-dialog.component.dart';
 import 'package:flutter_crise/components/button.component.dart';
 import 'package:flutter_crise/components/text.component.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:quill_html_editor/quill_html_editor.dart';
 import 'package:quiz_enem/controllers/game.controller.dart';
 import 'package:quiz_enem/core/fonts/fonts.dart';
+import 'package:quiz_enem/routes/app_routes.dart';
 
 import '../../../core/colors.dart';
 import '../../../models/pergunta.model.dart';
@@ -21,6 +24,7 @@ class StepsPerguntasPage extends GetView {
         builder: (_) {
           return Scaffold(
               appBar: AppBar(
+                backgroundColor: AppColor.primary,
                 automaticallyImplyLeading: false,
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,7 +54,7 @@ class StepsPerguntasPage extends GetView {
                             iconColor: Colors.white,
                             onPressed: () {
                               ctrl.resetData();
-                              Get.back();
+                              Get.offAndToNamed(Routes.DASH_BOARD);
                             }),
                       ],
                     )
@@ -114,6 +118,23 @@ class StepsPerguntasPage extends GetView {
                   return Column(
                     children: [
                       const SizedBox(height: 50),
+                      Row(
+                        children: [
+                          TextButton(
+                              onPressed: () {
+                                ctrl.speak(item.pergunta);
+                              },
+                              child: Row(
+                                children: [
+                                  TextComponent(
+                                  value: 'Me faça essa pergunta',
+                                  color: AppColor.primary),
+                                  SizedBox(width: 5),
+                                  Icon(CupertinoIcons.antenna_radiowaves_left_right)
+                                ],
+                              ))
+                        ],
+                      ),
                       SizedBox(
                           height: 250,
                           child: QuillHtmlEditor(

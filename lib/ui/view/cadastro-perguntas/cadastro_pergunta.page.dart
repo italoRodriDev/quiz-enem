@@ -8,6 +8,7 @@ import 'package:flutter_crise/components/text.component.dart';
 import 'package:get/get.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:quiz_enem/controllers/cadastro-perguntas.controller.dart';
+import 'package:quiz_enem/routes/app_routes.dart';
 
 import '../../../core/colors.dart';
 import '../../../core/fonts/fonts.dart';
@@ -36,24 +37,34 @@ class CadastroPerguntaPage extends GetView {
                   child: Scaffold(
                       backgroundColor: AppColor.background,
                       appBar: AppBar(
+                        backgroundColor: AppColor.primary,
+                        automaticallyImplyLeading: false,
                         title: TextComponent(
-                            value: 'Cadastrar pergunta',
-                            fontFamily: AppFont.Moonget,
-                            fontSize: 22),
+                            value: 'Nova Pergunta', fontSize: 18, fontWeight: FontWeight.bold),
                         actions: [
+                          Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: ButtonStylizedComponent(
+                                  color: AppColor.danger,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 1),
+                                  label: TextComponent(
+                                      value: 'Voltar', fontSize: 16),
+                                  onPressed: () {
+                                    Get.offAndToNamed(Routes.DASH_BOARD);
+                                  })),
                           ValueListenableBuilder(
                               valueListenable: ctrl.btnSaveEvent,
                               builder: (context, value, child) {
                                 if (value == true) {
                                   return Padding(
-                                      padding: EdgeInsets.all(5),
+                                      padding: const EdgeInsets.all(5),
                                       child: ButtonStylizedComponent(
+                                          color: AppColor.success,
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 12, vertical: 1),
                                           label: TextComponent(
-                                              value: 'Salvar',
-                                              fontFamily: AppFont.Moonget,
-                                              fontSize: 16),
+                                              value: 'Salvar', fontSize: 16),
                                           onPressed: () {
                                             ctrl.salvarPergunta();
                                           }));

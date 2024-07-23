@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crise/components/alert-dialog.component.dart';
@@ -15,12 +17,9 @@ class DashBoardController extends GetxController {
       ValueNotifier<List<PerguntaModel>>([]);
   dynamic idMateria;
   dynamic idAssunto;
-
-  @override
-  void onReady() {
-    getPerguntas();
-    super.onInit();
-  }
+  ValueNotifier<String> materiaAtualEvent = ValueNotifier<String>('');
+  ValueNotifier<String> assuntoAtualEvent = ValueNotifier<String>('');
+  Color corCard = Colors.yellow.withOpacity(0.8);
 
   Stream<List<MateriaModel>> getMaterias() {
     return FirebaseFirestore.instance
@@ -44,26 +43,7 @@ class DashBoardController extends GetxController {
             .toList());
   }
 
-  getPerguntas() {
-    List<PerguntaModel> list = [];
-    FirebaseFirestore.instance
-        .collection('Usuarios')
-        .doc('idUser')
-        .collection('Perguntas')
-        .snapshots()
-        .map((snapShot) => snapShot.docs
-            .map((doc) => PerguntaModel.fromJson(doc.data()))
-            .toList())
-        .forEach((element) {
-      for (var i in element) {
-        list.add(i);
-      }
-      perguntasEvent.value = list;
-    });
-  }
-
   getPerguntasFilter() {
-    perguntasEvent.value.clear();
     List<PerguntaModel> list = [];
     var ref = FirebaseFirestore.instance
         .collection('Usuarios')
@@ -85,8 +65,9 @@ class DashBoardController extends GetxController {
         .forEach((element) {
       for (var i in element) {
         list.add(i);
+        generateRandomColor();
+        perguntasEvent.value = list;
       }
-      perguntasEvent.value = list;
     });
   }
 
@@ -97,17 +78,27 @@ class DashBoardController extends GetxController {
         confirmText: 'Excluir',
         cancelText: 'Cancelar',
         onPressedCancel: () {}, onPressedConfirm: () {
-      FirebaseFirestore.instance
+      firestore
           .collection('Usuarios')
           .doc('idUser')
           .collection('Perguntas')
           .doc(item.id)
           .delete()
-          .then((value) {
-        SnackbarComponent.show(context, text: 'Excluido com sucesso');
-      }).catchError((error) {
-        SnackbarComponent.show(context, text: 'Erro ao excluir');
+          .then((value) async {
+        await SnackbarComponent.show(context, text: 'Excluido com sucesso');
+      }).catchError((error) async {
+        await SnackbarComponent.show(context, text: 'Erro ao excluir');
       });
     });
+  }
+
+  generateRandomColor() {
+    final Random random = Random();
+    corCard = Color.fromRGBO(
+      random.nextInt(256), // Valor aleatório para o componente vermelho (0-255)
+      random.nextInt(256), // Valor aleatório para o componente verde (0-255)
+      random.nextInt(256), // Valor aleatório para o componente azul (0-255)
+      1, // Opacidade (1.0 é completamente opaco)
+    ).withOpacity(0.2);
   }
 }

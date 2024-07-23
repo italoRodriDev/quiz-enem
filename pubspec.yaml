@@ -41,11 +41,13 @@ dependencies:
   loading_overlay: ^0.3.0
   permission_handler: ^10.2.0
   firebase_core: ^2.24.2
-  flutter_crise: ^0.0.32
+  flutter_crise: ^0.0.34
   cloud_firestore: ^4.4.0
   firebase_storage: ^11.0.11
   flutter_svg: ^2.0.10+1
   quill_html_editor: ^2.2.6
+  firebase_auth: ^4.16.0
+  flutter_tts: ^3.5.2
 
 dev_dependencies:
   flutter_test:
