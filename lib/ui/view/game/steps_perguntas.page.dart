@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crise/components/alert-dialog.component.dart';
 import 'package:flutter_crise/components/button.component.dart';
+import 'package:flutter_crise/components/content.component.dart';
 import 'package:flutter_crise/components/text.component.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
@@ -62,46 +63,44 @@ class StepsPerguntasPage extends GetView {
                 ),
               ),
               body: SafeArea(
-                  child: SingleChildScrollView(
-                      child: SizedBox(
-                          height: 750,
-                          child: StreamBuilder<List<PerguntaModel>>(
-                            stream: ctrl.getPerguntas(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                List<PerguntaModel> list = snapshot.data!;
-                                return StepsPerguntas(
-                                  onSkip: (index) {
-                                    FocusScope.of(context).unfocus();
-                                    ctrl.resetData();
-                                  },
-                                  onBack: (index) {
-                                    FocusScope.of(context).unfocus();
-                                    ctrl.resetData();
-                                  },
-                                  onFinish: () {
-                                    FocusScope.of(context).unfocus();
-                                    ctrl.resetData();
-                                    Get.back();
-                                  },
-                                  initialPage: 0,
-                                  accentColor: AppColor.primary,
-                                  stepsPages: [
-                                    for (var item in list)
-                                      buildStep(context, ctrl, list, item)
-                                  ],
-                                );
-                              } else if (snapshot.hasError) {
-                                return Container();
-                              } else {
-                                return Center(
-                                    child: Container(
-                                        padding: const EdgeInsets.only(top: 10),
-                                        child:
-                                            const CircularProgressIndicator()));
-                              }
-                            },
-                          )))));
+                  child: SizedBox(
+                      height: 750,
+                      child: StreamBuilder<List<PerguntaModel>>(
+                        stream: ctrl.getPerguntas(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<PerguntaModel> list = snapshot.data!;
+                            return StepsPerguntas(
+                              onSkip: (index) {
+                                FocusScope.of(context).unfocus();
+                                ctrl.resetData();
+                              },
+                              onBack: (index) {
+                                FocusScope.of(context).unfocus();
+                                ctrl.resetData();
+                              },
+                              onFinish: () {
+                                FocusScope.of(context).unfocus();
+                                ctrl.resetData();
+                                Get.back();
+                              },
+                              initialPage: 0,
+                              accentColor: AppColor.primary,
+                              stepsPages: [
+                                for (var item in list)
+                                  buildStep(context, ctrl, list, item)
+                              ],
+                            );
+                          } else if (snapshot.hasError) {
+                            return Container();
+                          } else {
+                            return Center(
+                                child: Container(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: const CircularProgressIndicator()));
+                          }
+                        },
+                      ))));
         });
   }
 
@@ -127,22 +126,23 @@ class StepsPerguntasPage extends GetView {
                               child: Row(
                                 children: [
                                   TextComponent(
-                                  value: 'Me faça essa pergunta',
-                                  color: AppColor.primary),
+                                      value: 'Me faça essa pergunta',
+                                      color: AppColor.primary),
                                   SizedBox(width: 5),
-                                  Icon(CupertinoIcons.antenna_radiowaves_left_right)
+                                  Icon(CupertinoIcons
+                                      .antenna_radiowaves_left_right)
                                 ],
                               ))
                         ],
                       ),
                       SizedBox(
-                          height: 250,
+                          height: 130,
                           child: QuillHtmlEditor(
                             hintText: 'Pergunta',
                             controller: quillCtrl,
                             isEnabled: false,
                             ensureVisible: false,
-                            minHeight: 250,
+                            minHeight: 130,
                             autoFocus: false,
                             hintTextAlign: TextAlign.start,
                             padding: const EdgeInsets.only(left: 10, top: 10),
@@ -170,56 +170,61 @@ class StepsPerguntasPage extends GetView {
                           valueListenable: ctrl.respostaEvent,
                           builder: (context, String value, child) {
                             if (value == 'ND') {
-                              return Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                              return SizedBox(
+                                  height: 350,
+                                  child: SingleChildScrollView(
+                                      child: Column(
                                     children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
-                                          TextComponent(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 22,
-                                              value: 'Alterantivas',
-                                              color: AppColor.primary),
-                                          TextComponent(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
-                                              value:
-                                                  'Selecione a alternativa correta'),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              TextComponent(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 22,
+                                                  value: 'Alterantivas',
+                                                  color: AppColor.primary),
+                                              TextComponent(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 18,
+                                                  value:
+                                                      'Selecione a alternativa correta'),
+                                            ],
+                                          )
                                         ],
-                                      )
+                                      ),
+                                      const SizedBox(height: 8),
+                                      for (var i = 0;
+                                          i < item.alternativas.length;
+                                          i++)
+                                        RadioListTile<int>(
+                                          activeColor: AppColor.success,
+                                          title: TextComponent(
+                                              value: item.alternativas[i]
+                                                  .toString()),
+                                          value: i,
+                                          groupValue: ctrl.selectedValue,
+                                          onChanged: (int? value) async {
+                                            await AlertDialogComponent.show(
+                                                context,
+                                                titleText:
+                                                    'Tem certeza da resposta?',
+                                                contentText:
+                                                    item.alternativas[value!],
+                                                confirmText: 'Confirmar',
+                                                cancelText: 'Voltar',
+                                                onPressedConfirm: () {
+                                              ctrl.setRespostaCorreta(
+                                                  value: value, item: item);
+                                            });
+                                          },
+                                        ),
                                     ],
-                                  ),
-                                  const SizedBox(height: 8),
-                                  for (var i = 0;
-                                      i < item.alternativas.length;
-                                      i++)
-                                    RadioListTile<int>(
-                                      activeColor: AppColor.success,
-                                      title: TextComponent(
-                                          value:
-                                              item.alternativas[i].toString()),
-                                      value: i,
-                                      groupValue: ctrl.selectedValue,
-                                      onChanged: (int? value) async {
-                                        await AlertDialogComponent.show(context,
-                                            titleText:
-                                                'Tem certeza da resposta?',
-                                            contentText:
-                                                item.alternativas[value!],
-                                            confirmText: 'Confirmar',
-                                            cancelText: 'Voltar',
-                                            onPressedConfirm: () {
-                                          ctrl.setRespostaCorreta(
-                                              value: value, item: item);
-                                        });
-                                      },
-                                    ),
-                                ],
-                              );
+                                  )));
                             } else {
                               return Column(
                                 children: [

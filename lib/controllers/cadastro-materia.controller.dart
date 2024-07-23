@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crise/components/alert-dialog.component.dart';
 import 'package:flutter_crise/components/snackbar.component.dart';
@@ -14,9 +15,10 @@ class CadastroMateriaController extends GetxController {
   bool isLoading = false;
 
   Stream<List<MateriaModel>> getMaterias() {
+    String idUser = FirebaseAuth.instance.currentUser!.uid;
     return firestore
         .collection('Materias')
-        .doc('idUser')
+        .doc(idUser)
         .collection('Materias')
         .snapshots()
         .map((snapShot) => snapShot.docs
@@ -25,10 +27,11 @@ class CadastroMateriaController extends GetxController {
   }
 
   saveData() async {
+    String idUser = FirebaseAuth.instance.currentUser!.uid;
     if (materia.text.isNotEmpty) {
       var ref = await firestore
           .collection('Materias')
-          .doc('idUser')
+          .doc(idUser.toString())
           .collection('Materias')
           .doc();
 
@@ -46,6 +49,7 @@ class CadastroMateriaController extends GetxController {
   }
 
   remove(MateriaModel model, index) async {
+    String idUser = FirebaseAuth.instance.currentUser!.uid;
     await AlertDialogComponent.show(context,
         titleText: 'Deseja excluir?',
         contentText: 'Matéria: ${model.nome.toString()}',
@@ -55,7 +59,7 @@ class CadastroMateriaController extends GetxController {
       setLoading(true);
       firestore
           .collection('Materias')
-          .doc('idUser')
+          .doc(idUser.toString())
           .collection('Materias')
           .doc(model.id)
           .delete()

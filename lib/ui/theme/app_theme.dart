@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../core/colors.dart';
@@ -7,14 +6,19 @@ import '../../core/fonts/fonts.dart';
 final ThemeData appThemeData = ThemeData(
     brightness: Brightness.light,
     primaryColor: AppColor.primary,
+    splashColor: Colors.grey,
     secondaryHeaderColor: AppColor.secondary,
     scaffoldBackgroundColor: AppColor.background,
     fontFamily: AppFont.Poppins,
     textTheme: const TextTheme(
       headline1: TextStyle(
-          fontSize: 72.0, fontFamily: AppFont.Poppins, fontWeight: FontWeight.bold),
+          fontSize: 72.0,
+          fontFamily: AppFont.Poppins,
+          fontWeight: FontWeight.bold),
       headline6: TextStyle(
-          fontSize: 36.0, fontFamily: AppFont.Poppins, fontStyle: FontStyle.normal),
+          fontSize: 36.0,
+          fontFamily: AppFont.Poppins,
+          fontStyle: FontStyle.normal),
       bodyText2: TextStyle(fontSize: 14.0, fontFamily: AppFont.Poppins),
     ),
     // -> Tema do checkbox

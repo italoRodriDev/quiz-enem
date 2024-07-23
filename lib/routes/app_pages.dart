@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:quiz_enem/ui/view/auth/cadastro/cadastro.page.dart';
+import 'package:quiz_enem/ui/view/auth/login/login.page.dart';
 import 'package:quiz_enem/ui/view/cadastro-assunto/cadastro-assunto.page.dart';
 import 'package:quiz_enem/ui/view/cadastro-materia/cadastro-materia.page.dart';
 import 'package:quiz_enem/ui/view/cadastro-perguntas/cadastro_pergunta.page.dart';
@@ -13,6 +15,18 @@ const timeAnimation = 300;
 
 class AppPages {
   static final routes = [
+    GetPage(
+      name: Routes.LOGIN,
+      page: () => LoginPage(),
+      transition: animation,
+      transitionDuration: const Duration(milliseconds: timeAnimation),
+    ),
+    GetPage(
+      name: Routes.CADASTRO,
+      page: () => CadastroPage(),
+      transition: animation,
+      transitionDuration: const Duration(milliseconds: timeAnimation),
+    ),
     GetPage(
       name: Routes.DASH_BOARD,
       page: () => DashBoardPage(),

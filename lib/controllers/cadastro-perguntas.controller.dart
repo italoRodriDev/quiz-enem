@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crise/components/alert-dialog-popup.component.dart';
 import 'package:flutter_crise/components/select.component.dart';
@@ -48,10 +49,11 @@ class CadastroPerguntasController extends GetxController {
   }
 
   getMaterias() {
+    String idUser = FirebaseAuth.instance.currentUser!.uid;
     List<MateriaModel> list = [];
     FirebaseFirestore.instance
         .collection('Materias')
-        .doc('idUser')
+        .doc(idUser.toString())
         .collection('Materias')
         .snapshots()
         .map((snapShot) => snapShot.docs
@@ -66,10 +68,11 @@ class CadastroPerguntasController extends GetxController {
   }
 
   getAssuntos() {
+    String idUser = FirebaseAuth.instance.currentUser!.uid;
     List<AssuntoModel> list = [];
     FirebaseFirestore.instance
         .collection('Materias')
-        .doc('idUser')
+        .doc(idUser.toString())
         .collection('Assuntos')
         .snapshots()
         .map((snapShot) => snapShot.docs
@@ -141,12 +144,13 @@ class CadastroPerguntasController extends GetxController {
   }
 
   salvarPergunta() async {
+    String idUser = FirebaseAuth.instance.currentUser!.uid;
     if (validForm() == true) {
       var textPergunta = await quillCtrl.getText();
 
       var ref = firestore
           .collection('Usuarios')
-          .doc('idUser')
+          .doc(idUser.toString())
           .collection('Perguntas')
           .doc();
 
@@ -170,7 +174,10 @@ class CadastroPerguntasController extends GetxController {
       ref.set(data.toJson()).then((value) async {
         resetDataInputs();
         setLoading(false);
-        await SnackbarComponent.show(context, text: 'Salvo com sucesso!', backgroundColor: AppColor.success, textColor: Colors.white);
+        await SnackbarComponent.show(context,
+            text: 'Salvo com sucesso!',
+            backgroundColor: AppColor.success,
+            textColor: Colors.white);
         Get.offAndToNamed(Routes.DASH_BOARD);
       }).catchError((error) async {
         setLoading(false);

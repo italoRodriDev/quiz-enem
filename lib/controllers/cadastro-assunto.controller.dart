@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crise/components/alert-dialog.component.dart';
 import 'package:flutter_crise/components/snackbar.component.dart';
@@ -18,9 +19,10 @@ class CadastroAssuntoController extends GetxController {
   bool isLoading = false;
 
   Stream<List<MateriaModel>> getMaterias() {
+    String idUser = FirebaseAuth.instance.currentUser!.uid;
     return firestore
         .collection('Materias')
-        .doc('idUser')
+        .doc(idUser.toString())
         .collection('Materias')
         .snapshots()
         .map((snapShot) => snapShot.docs
@@ -29,9 +31,10 @@ class CadastroAssuntoController extends GetxController {
   }
 
   Stream<List<AssuntoModel>> getAssuntos() {
+    String idUser = FirebaseAuth.instance.currentUser!.uid;
     return firestore
         .collection('Materias')
-        .doc('idUser')
+        .doc(idUser.toString())
         .collection('Assuntos')
         .snapshots()
         .map((snapShot) => snapShot.docs
@@ -40,11 +43,12 @@ class CadastroAssuntoController extends GetxController {
   }
 
   saveData() async {
+    String idUser = FirebaseAuth.instance.currentUser!.uid;
     if (materia.text.isNotEmpty && materia.text != 'ND') {
       if (assunto.text.isNotEmpty) {
         var ref = await firestore
             .collection('Materias')
-            .doc('idUser')
+            .doc(idUser.toString())
             .collection('Assuntos')
             .doc();
 
@@ -72,6 +76,8 @@ class CadastroAssuntoController extends GetxController {
   }
 
   remove(AssuntoModel model, index) async {
+    String idUser = FirebaseAuth.instance.currentUser!.uid;
+
     await AlertDialogComponent.show(context,
         titleText: 'Deseja excluir?',
         contentText: 'Assunto: ${model.nome.toString()}',
@@ -81,7 +87,7 @@ class CadastroAssuntoController extends GetxController {
       setLoading(true);
       firestore
           .collection('Materias')
-          .doc('idUser')
+          .doc(idUser.toString())
           .collection('Assuntos')
           .doc(model.id)
           .delete()
@@ -89,7 +95,7 @@ class CadastroAssuntoController extends GetxController {
         setLoading(false);
         await SnackbarComponent.show(context, text: 'Excluido com sucesso');
       }).catchError((error) async {
-         setLoading(false);
+        setLoading(false);
         await SnackbarComponent.show(context, text: 'Erro ao excluir');
       });
     });

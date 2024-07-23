@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_crise/components/alert-dialog-popup.component.dart';
 import 'package:flutter_crise/components/side-bar-drawer.component.dart';
 import 'package:flutter_crise/components/text.component.dart';
 import 'package:flutter_crise/components/button.component.dart';
 import 'package:flutter_crise/components/content.component.dart';
 import 'package:flutter_crise/components/select.component.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:quiz_enem/controllers/auth/sign_up.controller.dart';
 import 'package:quiz_enem/controllers/dashboard.controller.dart';
 import 'package:quiz_enem/core/colors.dart';
 import 'package:quiz_enem/core/fonts/fonts.dart';
@@ -14,10 +17,17 @@ import 'package:quiz_enem/models/pergunta.model.dart';
 import 'package:quiz_enem/routes/app_routes.dart';
 import 'package:quiz_enem/ui/view/dashboard/widgets/card-perguntas.dart';
 
+import '../../../controllers/auth/sign_in.controller.dart';
 import '../../../models/materia.model.dart';
 
 class DashBoardPage extends GetView {
   DashBoardController ctrl = Get.put(DashBoardController());
+  SignInController authCtrl = Get.put(SignInController());
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _openDrawer() {
+    _scaffoldKey.currentState?.openDrawer();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +36,7 @@ class DashBoardPage extends GetView {
         init: ctrl,
         builder: (_) {
           return Scaffold(
+              key: _scaffoldKey,
               drawer: Drawer(
                   child: ListView(
                 children: [
@@ -66,7 +77,9 @@ class DashBoardPage extends GetView {
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return CircularProgressIndicator(); // Show a loading indicator while waiting for data
+                                return LinearProgressIndicator(
+                                    color: AppColor
+                                        .primary); // Show a loading indicator while waiting for data
                               } else if (snapshot.hasError) {
                                 return Text(
                                     'Error: ${snapshot.error}'); // Show an error message if there's an error
@@ -111,7 +124,9 @@ class DashBoardPage extends GetView {
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return CircularProgressIndicator(); // Show a loading indicator while waiting for data
+                                return LinearProgressIndicator(
+                                    color: AppColor
+                                        .primary); // Show a loading indicator while waiting for data
                               } else if (snapshot.hasError) {
                                 return Text(
                                     'Error: ${snapshot.error}'); // Show an error message if there's an error
@@ -150,21 +165,34 @@ class DashBoardPage extends GetView {
                               }
                             },
                           ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: ButtonStylizedComponent(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 1),
-                                      label: TextComponent(
-                                          value: 'Cadastrar nova pergunta',
-                                          fontSize: 16),
-                                      onPressed: () {
-                                        Get.toNamed(Routes.CADASTRO_PERGUNTA);
-                                      }))
-                            ],
-                          ),
+                          const SizedBox(height: 20),
+                          ValueListenableBuilder(
+                              valueListenable: ctrl.materiaAtualEvent,
+                              builder: (context, value, child) {
+                                if (value.isNotEmpty) {
+                                  return Row(
+                                    children: [
+                                      Expanded(
+                                          child: ButtonStylizedComponent(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 1),
+                                              label: TextComponent(
+                                                  value:
+                                                      'Cadastrar nova pergunta',
+                                                  fontSize: 16),
+                                              onPressed: () {
+                                                Get.toNamed(
+                                                    Routes.CADASTRO_PERGUNTA);
+                                              }))
+                                    ],
+                                  );
+                                } else {
+                                  return Container();
+                                }
+                              }),
+                          const SizedBox(height: 20),
                           Row(
                             children: [
                               Expanded(
@@ -179,6 +207,7 @@ class DashBoardPage extends GetView {
                                       }))
                             ],
                           ),
+                          const SizedBox(height: 20),
                           Row(
                             children: [
                               Expanded(
@@ -186,11 +215,33 @@ class DashBoardPage extends GetView {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 12, vertical: 1),
                                       label: TextComponent(
-                                          value: 'Meus assuntos',
-                                          fontSize: 16),
+                                          value: 'Meus assuntos', fontSize: 16),
                                       onPressed: () {
                                         Get.toNamed(Routes.CADASTRO_ASSUNTO);
                                       }))
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Expanded(
+                                  child: ButtonStylizedComponent(
+                                      onPressed: () {
+                                        authCtrl.signOut();
+                                      },
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 1),
+                                      label: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          TextComponent(
+                                              value: 'Sair da conta',
+                                              fontSize: 16),
+                                          SizedBox(width: 5),
+                                          Icon(Icons.exit_to_app)
+                                        ],
+                                      )))
                             ],
                           )
                         ],
@@ -201,7 +252,7 @@ class DashBoardPage extends GetView {
               appBar: AppBar(
                 backgroundColor: AppColor.primary,
                 title: TextComponent(
-                    value: 'Anotações',
+                    value: 'Caderno de estudos',
                     fontWeight: FontWeight.bold,
                     fontSize: 22),
               ),
@@ -239,7 +290,7 @@ class DashBoardPage extends GetView {
                       const SizedBox(height: 5),
                       const Divider(),
                       SizedBox(
-                          height: 500,
+                          height: 600,
                           child: ValueListenableBuilder(
                               valueListenable: ctrl.perguntasEvent,
                               builder: (context, value, child) {
@@ -270,28 +321,57 @@ class DashBoardPage extends GetView {
                                   );
                                 } else {
                                   return Center(
-                                    child: TextComponent(
-                                        value:
-                                            'Selecione uma matéria e um assunto...'),
+                                    child: Column(
+                                      children: [
+                                        SvgPicture.asset(
+                                            'assets/images/undraw_book_lover_re_rwjy.svg',
+                                            height: 200),
+                                        const SizedBox(height: 10),
+                                        TextComponent(
+                                            value:
+                                                'Selecione uma matéria ou um assunto...'),
+                                      ],
+                                    ),
                                   );
                                 }
                               })),
+                      const Divider(),
                     ],
                   )),
                   Positioned(
-                      bottom: 0,
+                      bottom: 30,
                       left: 50,
                       right: 50,
                       child: Row(
                         children: [
                           Expanded(
                               child: ButtonStylizedComponent(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 1),
+                                  borderRadius: 10,
                                   label: TextComponent(
-                                      value: 'INICIAR GAME QUIZ', fontSize: 16),
-                                  onPressed: () {
-                                    Get.toNamed(Routes.STEP_PERGUNTAS);
+                                      fontFamily: AppFont.Moonget,
+                                      value: 'Iniciar Game Quiz',
+                                      fontSize: 16),
+                                  onPressed: () async {
+                                    if (ctrl.idMateria != null ||
+                                        ctrl.idAssunto != null) {
+                                      Get.toNamed(Routes.STEP_PERGUNTAS);
+                                    } else {
+                                      await AlertDialogPopupsComponent.show(
+                                          context,
+                                          titleText:
+                                              'Selecione uma matéria ou assunto!',
+                                          contentText:
+                                              'Clique menu lateral para selecionar a matéria ou um assunto.',
+                                          imageUrl:
+                                              'assets/images/undraw_bibliophile_re_xarc.svg',
+                                          confirmText: 'Continuar',
+                                          colorPrimary: AppColor.primary,
+                                          fontSizeTitle: 18,
+                                          colorText: AppColor.primary,
+                                          onPressedConfirm: () {
+                                        _openDrawer();
+                                      });
+                                    }
                                   }))
                         ],
                       )),

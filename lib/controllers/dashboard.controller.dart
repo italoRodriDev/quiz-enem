@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crise/components/alert-dialog.component.dart';
 import 'package:flutter_crise/components/snackbar.component.dart';
@@ -22,9 +23,10 @@ class DashBoardController extends GetxController {
   Color corCard = Colors.yellow.withOpacity(0.8);
 
   Stream<List<MateriaModel>> getMaterias() {
+    String idUser = FirebaseAuth.instance.currentUser!.uid;
     return FirebaseFirestore.instance
         .collection('Materias')
-        .doc('idUser')
+        .doc(idUser.toString())
         .collection('Materias')
         .snapshots()
         .map((snapShot) => snapShot.docs
@@ -33,9 +35,10 @@ class DashBoardController extends GetxController {
   }
 
   Stream<List<AssuntoModel>> getAssuntos() {
+    String idUser = FirebaseAuth.instance.currentUser!.uid;
     return FirebaseFirestore.instance
         .collection('Materias')
-        .doc('idUser')
+        .doc(idUser.toString())
         .collection('Assuntos')
         .snapshots()
         .map((snapShot) => snapShot.docs
@@ -44,10 +47,11 @@ class DashBoardController extends GetxController {
   }
 
   getPerguntasFilter() {
+    String idUser = FirebaseAuth.instance.currentUser!.uid;
     List<PerguntaModel> list = [];
     var ref = FirebaseFirestore.instance
         .collection('Usuarios')
-        .doc('idUser')
+        .doc(idUser.toString())
         .collection('Perguntas');
     if (idMateria != null) {
       ref.where('idMateria', isEqualTo: idMateria);
@@ -72,6 +76,7 @@ class DashBoardController extends GetxController {
   }
 
   removePergunta(PerguntaModel item, int index) async {
+    String idUser = FirebaseAuth.instance.currentUser!.uid;
     await AlertDialogComponent.show(context,
         titleText: 'Deseja excluir?',
         contentText: 'Pergunta ${index + 1}',
@@ -80,7 +85,7 @@ class DashBoardController extends GetxController {
         onPressedCancel: () {}, onPressedConfirm: () {
       firestore
           .collection('Usuarios')
-          .doc('idUser')
+          .doc(idUser.toString())
           .collection('Perguntas')
           .doc(item.id)
           .delete()
