@@ -57,7 +57,7 @@ class SignUpController extends GetxController {
       "senha": senha.text,
     };
 
-    firestoreRef.collection("Users").doc(idUser).set(data).then((data) async {
+    firestoreRef.collection("Usuarios").doc(idUser).set(data).then((data) async {
       isLoadingEvent.value = false;
       Get.toNamed(Routes.DASH_BOARD);
     }).catchError((e) {

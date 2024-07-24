@@ -93,66 +93,63 @@ class CadastroMateriaPage extends GetView {
                                           if (snapshot.hasData) {
                                             List<MateriaModel> list =
                                                 snapshot.data!;
-                                            return ListView.builder(
-                                                scrollDirection: Axis.vertical,
-                                                shrinkWrap: true,
-                                                itemCount: list.length,
-                                                itemBuilder: (context, index) {
-                                                  MateriaModel model =
-                                                      list[index];
-                                                  return Card(
-                                                      color: AppColor.primary,
-                                                      child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(10),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
+                                            return SizedBox(
+                                                height: 500,
+                                                child: ListView.builder(
+                                                    scrollDirection:
+                                                        Axis.vertical,
+                                                    shrinkWrap: true,
+                                                    itemCount: list.length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      MateriaModel model =
+                                                          list[index];
+                                                      return Card(
+                                                          color:
+                                                              AppColor.primary,
+                                                          child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(10),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
                                                                 children: [
-                                                                  Row(
+                                                                  Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
                                                                     children: [
-                                                                      SizedBox(
-                                                                          width:
-                                                                              320,
-                                                                          child: TextComponent(
-                                                                              color: Colors.white,
-                                                                              value: model.nome,
-                                                                              fontWeight: FontWeight.w600,
-                                                                              fontSize: 18)),
+                                                                      Row(
+                                                                        children: [
+                                                                          SizedBox(
+                                                                              width: 320,
+                                                                              child: TextComponent(color: Colors.white, value: model.nome, fontWeight: FontWeight.w600, fontSize: 18)),
+                                                                        ],
+                                                                      ),
                                                                     ],
                                                                   ),
-                                                                ],
-                                                              ),
-                                                              Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .end,
-                                                                children: [
-                                                                  ButtonIconCircularComponent(
-                                                                      iconColor:
-                                                                          AppColor
+                                                                  Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .end,
+                                                                    children: [
+                                                                      ButtonIconCircularComponent(
+                                                                          iconColor: AppColor
                                                                               .danger,
-                                                                      iconData:
-                                                                          CupertinoIcons
+                                                                          iconData: CupertinoIcons
                                                                               .trash,
-                                                                      onPressed:
-                                                                          () {
-                                                                        ctrl.remove(
-                                                                            model,
-                                                                            index);
-                                                                      })
+                                                                          onPressed:
+                                                                              () {
+                                                                            ctrl.remove(model,
+                                                                                index);
+                                                                          })
+                                                                    ],
+                                                                  )
                                                                 ],
-                                                              )
-                                                            ],
-                                                          )));
-                                                });
+                                                              )));
+                                                    }));
                                           } else if (snapshot.hasError) {
                                             return Container();
                                           } else {
@@ -162,7 +159,9 @@ class CadastroMateriaPage extends GetView {
                                                         const EdgeInsets.only(
                                                             top: 10),
                                                     child:
-                                                        const CircularProgressIndicator()));
+                                                        CircularProgressIndicator(
+                                                            color: AppColor
+                                                                .primary)));
                                           }
                                         },
                                       ),

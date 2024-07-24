@@ -70,13 +70,15 @@ class StepsPerguntasPage extends GetView {
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             List<PerguntaModel> list = snapshot.data!;
-                            return StepsPerguntas(
+                            return list.isNotEmpty ? StepsPerguntas(
                               onSkip: (index) {
                                 FocusScope.of(context).unfocus();
+                                ctrl.saveCurrentIndex(pergunta: list[index], index: index);
                                 ctrl.resetData();
                               },
                               onBack: (index) {
                                 FocusScope.of(context).unfocus();
+                                ctrl.saveCurrentIndex(pergunta: list[index], index: index);
                                 ctrl.resetData();
                               },
                               onFinish: () {
@@ -90,7 +92,7 @@ class StepsPerguntasPage extends GetView {
                                 for (var item in list)
                                   buildStep(context, ctrl, list, item)
                               ],
-                            );
+                            ) : TextComponent(value: 'Nenhum dado para exibir.');
                           } else if (snapshot.hasError) {
                             return Container();
                           } else {

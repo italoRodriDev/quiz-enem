@@ -18,7 +18,7 @@ void main() async {
   await Get.putAsync<StepPerguntasService>(() async => StepPerguntasService());
 
   runApp(GetMaterialApp(
-    title: 'QuizEnem',
+    title: 'Caderno de estudos',
     debugShowCheckedModeBanner: false,
     getPages: AppPages.routes,
     initialRoute: Routes.LOGIN,

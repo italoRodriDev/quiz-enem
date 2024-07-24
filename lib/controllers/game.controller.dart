@@ -18,6 +18,7 @@ class GameController extends GetxController {
   ValueNotifier<int> errosEvent = ValueNotifier<int>(0);
   int selectedValue = -1;
   bool respostaCorreta = false;
+  int currentIndex = 0;
 
   @override
   void onReady() {
@@ -43,7 +44,7 @@ class GameController extends GetxController {
     String idUser = FirebaseAuth.instance.currentUser!.uid;
 
     Query<Map<String, dynamic>> ref =
-        firestore.collection('Usuarios').doc(idUser).collection('Perguntas');
+        firestore.collection('Perguntas').doc(idUser).collection('Perguntas');
 
     if (idMateria != null) {
       ref = ref.where('idMateria', isEqualTo: idMateria);
@@ -60,6 +61,26 @@ class GameController extends GetxController {
               PerguntaModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
     });
+  }
+
+  saveCurrentIndex(
+      {required PerguntaModel pergunta, required int index}) async {
+    String idUser = FirebaseAuth.instance.currentUser!.uid;
+    await firestore
+        .collection('Usuarios')
+        .doc(idUser.toString())
+        .collection('BackupIndexSteps')
+        .doc('Steps')
+        .collection('${pergunta.idMateria}${pergunta.idAssunto}${pergunta.id}')
+        .doc(pergunta.id)
+        .set({
+      "materiaAtual": pergunta.idMateria,
+      "assuntoAtual": pergunta.idAssunto,
+      "perguntaAtual": pergunta.id,
+      "indexPerguntaAtual": index
+    }).then((value) async {
+      print('Index salvo');
+    }).catchError((error) async {});
   }
 
   setRespostaCorreta({required int value, required PerguntaModel item}) {

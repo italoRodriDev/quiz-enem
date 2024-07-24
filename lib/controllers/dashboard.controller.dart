@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crise/components/alert-dialog.component.dart';
 import 'package:flutter_crise/components/snackbar.component.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:quiz_enem/models/pergunta.model.dart';
 
@@ -20,7 +21,8 @@ class DashBoardController extends GetxController {
   dynamic idAssunto;
   ValueNotifier<String> materiaAtualEvent = ValueNotifier<String>('');
   ValueNotifier<String> assuntoAtualEvent = ValueNotifier<String>('');
-  Color corCard = Colors.yellow.withOpacity(0.8);
+  FlutterTts flutterTts = FlutterTts();
+  bool enabledSpeak = false;
 
   Stream<List<MateriaModel>> getMaterias() {
     String idUser = FirebaseAuth.instance.currentUser!.uid;
@@ -48,9 +50,8 @@ class DashBoardController extends GetxController {
 
   getPerguntasFilter() {
     String idUser = FirebaseAuth.instance.currentUser!.uid;
-    List<PerguntaModel> list = [];
     var ref = FirebaseFirestore.instance
-        .collection('Usuarios')
+        .collection('Perguntas')
         .doc(idUser.toString())
         .collection('Perguntas');
     if (idMateria != null) {
@@ -67,9 +68,9 @@ class DashBoardController extends GetxController {
             .map((doc) => PerguntaModel.fromJson(doc.data()))
             .toList())
         .forEach((element) {
+      List<PerguntaModel> list = [];
       for (var i in element) {
         list.add(i);
-        generateRandomColor();
         perguntasEvent.value = list;
       }
     });
@@ -84,7 +85,7 @@ class DashBoardController extends GetxController {
         cancelText: 'Cancelar',
         onPressedCancel: () {}, onPressedConfirm: () {
       firestore
-          .collection('Usuarios')
+          .collection('Perguntas')
           .doc(idUser.toString())
           .collection('Perguntas')
           .doc(item.id)
@@ -95,15 +96,5 @@ class DashBoardController extends GetxController {
         await SnackbarComponent.show(context, text: 'Erro ao excluir');
       });
     });
-  }
-
-  generateRandomColor() {
-    final Random random = Random();
-    corCard = Color.fromRGBO(
-      random.nextInt(256), // Valor aleatório para o componente vermelho (0-255)
-      random.nextInt(256), // Valor aleatório para o componente verde (0-255)
-      random.nextInt(256), // Valor aleatório para o componente azul (0-255)
-      1, // Opacidade (1.0 é completamente opaco)
-    ).withOpacity(0.2);
   }
 }

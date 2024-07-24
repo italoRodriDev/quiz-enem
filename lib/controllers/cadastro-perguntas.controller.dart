@@ -149,7 +149,7 @@ class CadastroPerguntasController extends GetxController {
       var textPergunta = await quillCtrl.getText();
 
       var ref = firestore
-          .collection('Usuarios')
+          .collection('Perguntas')
           .doc(idUser.toString())
           .collection('Perguntas')
           .doc();
